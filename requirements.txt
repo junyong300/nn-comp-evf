@@ -1,0 +1,5 @@
+flask
+pyyaml
+psutil
+GPUtil
+tensorflow==2.9.1

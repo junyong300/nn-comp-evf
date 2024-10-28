@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Sign in</title>
+    <!-- CSS files -->
+    <link href="./dist/css/tabler.min.css" rel="stylesheet"/>
+    <!-- <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
+    <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
+    <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
+    <link href="./dist/css/demo.min.css" rel="stylesheet"/> -->
+  </head>
+  <!-- <body  class=" border-top-wide border-primary d-flex flex-column"> -->
+  <body>
+    <div class="page page-center">
+      <div class="container-tight py-4">
+        <div class="text-center mb-4">
+          <!-- <a href="." class="navbar-brand navbar-brand-autodark"><img src="./static/images/ai.png" height="100" alt=""></a> -->
+        </div>
+        <div class="card card-md" action="." method="get" autocomplete="off">
+          <div class="card-body">
+            <img class="mx-auto d-block" src="./static/images/ai.png" height="80" alt="">
+            <p class="h1 text-center mb-3 mt-3">Login</p>
+            <div class="mb-3">
+              <label class="form-label">ID
+                <!-- <span class="form-label-description">                
+                </span> -->
+              </label>
+              <input id="id_username" type="text" class="form-control" placeholder="Enter ID" pattern="[A-Za-z0-9-_]{10}">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">
+                Password
+                <!-- <span class="form-label-description">
+                  <a href="./forgot-password.html">I forgot password</a>
+                </span> -->
+              </label>
+              <div class="input-group input-group-flat">
+                <input id="id_password" type="password" class="form-control"  placeholder="Password"  autocomplete="off">
+              </div>
+            </div>
+            <div class="form-footer">
+              <button id="id_sign_in" type="submit" class="btn btn-primary w-100">Sign in</button>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-muted mt-3">
+          Don't have account yet? <a href="./sign-up.html" tabindex="-1">Sign up</a>
+        </div>
+      </div>
+    </div>
+    <!-- Libs JS -->
+    <!-- Tabler Core -->
+    <script src="./dist/js/tabler.min.js" defer></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.min.js"></script>	
+    <script type="text/javascript" src="js/notify.js"></script>
+    <script>
+      $(document).ready(function () {
+        init()
+        
+      });
+  
+      function init() {
+        $.notify("Hello World");
+        $('#id_sign_in').click(function () {
+          console.log("sign_in!");
+          login()
+        })
+      }
+
+      function login() {
+        user = $("#id_username").val()
+        password = $("#id_password").val()
+        body = {
+          user: user,
+          password: password,
+        }
+
+        $.ajax({
+          type: "post",
+          contentType: "application/json",
+          url: "/auth/login",
+          data: JSON.stringify(body),
+          dataType: 'json',
+          timeout: 60*1000,
+          success: function (msg) {
+            if (msg['err'] == null) {
+              $.notify("Login success!", "success");
+              $.cookie("user", user);
+              window.location.href = "/";
+            } else {
+              $.notify(msg['err']);
+            }
+          },
+          error: function (e) {
+            console.log(e)
+            $.notify(e);
+          }
+        });
+      }
+  
+      // function create_project() {
+      //   //get project name
+      //   name = $("#id_project_name").val()
+  
+      //   $.ajax({
+      //     type: "post",
+      //     contentType: "application/json",
+      //     url: "/project/create",
+      //     data: JSON.stringify({"name":name}),
+      //     dataType: 'json',
+      //     timeout: 60*1000,
+      //     success: function (msg) {
+      //       if (msg['err'] == null) {
+      //         $.cookie("project", name);
+      //         $.notify("project has created!", "success");
+      //         load_project_list()
+      //       } else {
+      //         $.notify(msg['err']);
+      //       }
+      //     },
+      //     error: function (e) {
+      //       console.log(e)
+      //       $.notify(e);
+      //     }
+      //   });
+      // }
+  
+      // function delete_project() {
+      //   //get project name
+      //   name = $("#id_project").val()
+  
+      //   $.ajax({
+      //     type: "post",
+      //     contentType: "application/json",
+      //     url: "/project/delete",
+      //     data: JSON.stringify({"name":name}),
+      //     dataType: 'json',
+      //     timeout: 60*1000,
+      //     success: function (msg) {
+      //       if (msg['err'] == null) {
+      //         $.cookie("project", ""); // delete name!
+      //         $.notify("project has deleted!", "success");
+      //         load_project_list()
+      //       } else {
+      //         $.notify(msg['err']);
+      //       }
+      //     },
+      //     error: function (e) {
+      //       console.log(e)
+      //       $.notify(e);
+      //     }
+      //   });
+      // }				
+  
+      // function update(data) {
+      //   console.log(data)
+  
+      //   temp = ""
+      //   for (i = 0; i < data['projects'].length; i++) {
+      //     temp += `<option>${data['projects'][i]}</option>\n`
+      //   }
+      //   $('#id_project').html(temp)
+      //   $('#id_project').change(project_changed);
+  
+      //   current_project = $.cookie("project")
+      //   console.log("current project:" + current_project)
+        
+      //   if (current_project != "") {
+      //     $("#id_project").val(current_project).change();
+      //   } else if (data['projects'].length > 0) {
+      //     $("#id_project").val(data['projects'][0]).change();
+      //   }
+      // }
+  
+      // function project_changed() {
+      //   temp = $("#id_project :selected").val();
+      //   console.log(temp)
+  
+      //   $.cookie("project", temp);
+      //   console.log("current project:" + $.cookie("project"))
+      // }
+    </script>  
+  </body>
+</html>

@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+	<div class="container-xl">
+		<!-- Page title -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<!-- Page pre-title -->
+					<div class="page-pretitle">
+						Tasks
+					</div>
+				</div>
+
+				<div class="col-12 col-md-auto ms-auto">
+					<div class="btn-list">
+						<!-- <a href="#" class="btn btn-success">Save changes</a>
+								<a href="#" class="btn">Save and continue</a>
+								<a href="#" class="btn btn-danger">Cancel</a> -->
+						<div class="input-icon">
+							<span class="input-icon-addon">
+								<!-- Download SVG icon from http://tabler-icons.io/i/search -->
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+									viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+									stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+									<circle cx="10" cy="10" r="7"></circle>
+									<line x1="21" y1="21" x2="15" y2="15"></line>
+								</svg>
+							</span>
+							<input id="id_search" type="text" value="" class="form-control" placeholder="Search..." aria-label="Search..." autocomplete="off">
+						</div>
+
+						<!-- <a id="id_create_task" href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#id_modal_new"> -->
+						<div id="id_create_task" href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#id_modal_new">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+								<line x1="12" y1="5" x2="12" y2="19"></line>
+								<line x1="5" y1="12" x2="19" y2="12"></line>
+							</svg>
+							New
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="page-body">
+
+		<div class="container-xl">
+			<div class="col-12">
+				<div class="card">
+					<table class="table table-vcenter card-table">
+						<thead>
+							<tr>
+								<th class="w-auto">Name</th>
+								<th class="w-auto">Training record count</th>
+								<th class="w-auto">Validataion record count</th>
+								<th class="w-auto"></th>
+							</tr>
+						</thead>
+						<tbody id="id_table_body">
+							<!-- <tr>
+								<td>CIFAR-100</td>
+								<td class="text-muted">
+									50000
+								</td>
+								<td class="text-muted">
+									10000
+								</td>
+								<td class="text-end">
+									<div class="dropdown">
+										<button class="btn btn-sm dropdown-toggle" type="button" aria-haspopup="true" data-bs-toggle="dropdown">
+											Actions
+										</button>
+										<ul class="dropdown-menu">
+											<li><a class="dropdown-item" href="#">Copy</a></li>
+											<li><a class="dropdown-item" href="#">Delete</a></li>
+										</ul>
+									</div>
+								</td>
+							</tr> -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="id_modal_new" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Task</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="id_modal_new_alert" class="alert alert-warning" role="alert">
+						alert message
+					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="mb-3">
+								<label class="form-label">Name</label>
+								<input id="id_task_name" type="text" class="form-control" placeholder="Name" autocomplete="off">
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="mb-3">
+								<label class="form-label">Traning record count</label>
+								<input id="id_training_count" type="number" value="100" class="form-control" placeholder="1">
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<div class="mb-3">
+								<label class="form-label">Validation record count</label>
+								<input id="id_validation_count" type="number" value="100" class="form-control" placeholder="1">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<!-- Cards with tabs component -->
+					<div class="card-tabs ">
+						<!-- Cards navigation -->
+						<ul class="nav nav-tabs">
+							<li class="nav-item"><a id="id_tab_1" href="#tab-top-1" class="nav-link active" data-bs-toggle="tab">Config</a></li>
+							<li class="nav-item"><a id="id_tab_2" href="#tab-top-2" class="nav-link" data-bs-toggle="tab">Augmentation</a></li>
+							<li class="nav-item"><a id="id_tab_3" href="#tab-top-3" class="nav-link" data-bs-toggle="tab">Preprocessing</a></li>
+							<li class="nav-item"><a id="id_tab_4" href="#tab-top-4" class="nav-link" data-bs-toggle="tab">Metric</a></li>
+							<li class="nav-item"><a id="id_tab_5" href="#tab-top-5" class="nav-link" data-bs-toggle="tab">Loss</a></li>
+							<li class="nav-item"><a id="id_tab_6" href="#tab-top-6" class="nav-link" data-bs-toggle="tab">Optimizer</a></li>
+							<li class="nav-item"><a id="id_tab_7" href="#tab-top-7" class="nav-link" data-bs-toggle="tab">Callbacks</a></li>
+							<li class="nav-item"><a id="id_tab_8" href="#tab-top-8" class="nav-link" data-bs-toggle="tab">Library</a></li>
+						</ul>
+						<div class="tab-content">
+							<!-- Content of card #1 -->
+							<div id="tab-top-1" class="card tab-pane active show">
+								<div class="card-body">
+									<div id="editor1" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #2 -->
+							<div id="tab-top-2" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor2" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #3 -->
+							<div id="tab-top-3" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor3" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #4 -->
+							<div id="tab-top-4" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor4" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #5 -->
+							<div id="tab-top-5" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor5" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #6 -->
+							<div id="tab-top-6" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor6" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #7 -->
+							<div id="tab-top-7" class="card tab-pane">
+								<div class="card-body">
+									<div id="editor7" style="height: 25rem"></div>
+								</div>
+							</div>
+							<!-- Content of card #8 -->
+							<div id="tab-top-8" class="card tab-pane">
+								<div class="card-body">
+									<div id="id_libs" class="card-body-scrollable" style="height: 25rem">
+										<label class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox">
+											<span class="form-check-label">python</span>
+										</label>
+										<label class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" disabled="">
+											<span class="form-check-label">database</span>
+										</label>
+										<label class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" checked="">
+											<span class="form-check-label">apple</span>
+										</label>
+									</div>									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+						Cancel
+					</a>
+					<!-- <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal"> -->
+					<a id="id_create_task_ok" href="#" class="btn btn-primary ms-auto">
+						<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+						<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+							stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+							stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<line x1="12" y1="5" x2="12" y2="19" />
+							<line x1="5" y1="12" x2="19" y2="12" />
+						</svg>
+						Create
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="id_modal_copy_task" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Copy Task</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="mb-12">
+								<label class="form-label">Name</label>
+								<input id="id_copy_task_name" type="text" class="form-control" autocomplete="off">
+							</div>							
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+					<a id="id_copy_task_ok" href="#" class="btn btn-primary ms-auto">
+						<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+						<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+							stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+							stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<line x1="12" y1="5" x2="12" y2="19" />
+							<line x1="5" y1="12" x2="19" y2="12" />
+						</svg>
+						Copy
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="id_modal_confirm" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+		  <div class="modal-content">
+			<div class="modal-body">
+			  <div class="modal-title">Are you sure?</div>
+			  <div id="id_modal_confirm_msg" class="text-muted">Do you really want to delete?</div>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+			  <button id="id_modal_confirm_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Yes!</button>
+			</div>
+		  </div>
+		</div>
+	</div>	
+
+</div>
+
+<script src="/static/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/src/tasks.js" defer></script>
+
+{% endblock %}

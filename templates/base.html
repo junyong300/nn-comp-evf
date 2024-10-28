@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Dashboard</title>
+	<link href="/static/dist/css/tabler.min.css" rel="stylesheet" />
+</head>
+
+<script src="/static/dist/js/tabler.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.min.js"></script>
+<!-- https://notifyjs.jpillora.com/ -->
+<script type="text/javascript" src="/static/js/notify.js"></script>
+<script src="/static/src/base.js" defer></script>
+
+<body class="layout-fluid">
+	<div class="page">
+		<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+			<div class="container-fluid">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-brand navbar-brand-autodark justify-content-start">
+					<h2 class="page-title">
+						<img src="/static/images/logo.png" alt="VReID" class="navbar-brand-image">
+						</img>
+						<span class="p-2 text-white tracking-wide">Edgifi</span>
+					</h2>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar-menu">
+					<ul class="navbar-nav pt-lg-3">						
+						<li class="nav-item mx-3 mb-1 my-1 mb-2">
+							<row class="d-flex justify-content-end">
+								<span class="badge badge-outline text-green mx-1">
+									<a href="#" class="text-green" title="create project" data-bs-toggle="modal" data-bs-target="#id_modal_create_project">create</a>
+								</span>
+								<span class="badge badge-outline text-red">
+									<a href="#" class="text-red" title="delete project" data-bs-toggle="modal" data-bs-target="#id_modal_delete_project">delete</a>
+								</span>
+							</row>
+						</li>				
+						<li class="nav-item mx-3 mb-3">							
+							<select id="id_project" class="form-select text-black">
+								<!-- <option value="1">Project1</option>
+								<option value="2">Project2</option>
+								<option value="3">Project3</option> -->
+							</select>
+						</li>
+						<li id="id_menu_dashboard" class="nav-item {% if 'dashboard' in request.path %}active{% endif %}">
+							<a class="nav-link" href="/dashboard">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-layout-dashboard" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M4 4h6v8h-6z"></path>
+										<path d="M4 16h6v4h-6z"></path>
+										<path d="M14 12h6v8h-6z"></path>
+										<path d="M14 4h6v4h-6z"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Dashboard
+								</span>
+							</a>
+						</li>
+
+						<li id="id_menu_tasks" class="nav-item {% if 'tasks' in request.path %}active{% endif %}">
+							<a class="nav-link" href="/tasks">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-list-check" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M3.5 5.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 11.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 17.5l1.5 1.5l2.5 -2.5"></path>
+										<line x1="11" y1="6" x2="20" y2="6"></line>
+										<line x1="11" y1="12" x2="20" y2="12"></line>
+										<line x1="11" y1="18" x2="20" y2="18"></line>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Tasks
+								</span>
+							</a>
+						</li>
+
+						<li id="id_menu_models" class="nav-item {% if 'models' in request.path %}active{% endif %}">
+							<a class="nav-link" href="/models">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-box-model-2" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M8 8h8v8h-8z"></path>
+										<rect x="4" y="4" width="16" height="16" rx="2"></rect>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Models
+								</span>
+							</a>
+						</li>
+
+						<li id="id_menu_jobs" class="nav-item {% if 'jobs' in request.path %}active{% endif %}">
+							<a class="nav-link" href="/jobs">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<polyline points="9 11 12 14 20 6" />
+										<path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Jobs
+								</span>
+							</a>
+						</li>
+					</ul>
+
+					<ul class="navbar-nav pt-lg-3 justify-content-end">
+						<li class="nav-item">
+							<a class="nav-link" href="#">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<circle cx="12" cy="7" r="4"></circle>
+										<path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+									</svg>
+								</span>
+								<span id="id_user" class="nav-link-title">
+									{{ session['user'] }}
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modal-logout">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path
+											d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+										</path>
+										<path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Logout
+								</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</aside>
+
+		<!-- // modal dialogs begin -->
+		<div id="id_modal_create_project" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Create Project</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="mb-12">
+									<label class="form-label">Name</label>
+									<input id="id_project_name" type="text" class="form-control" placeholder="Name" autocomplete="off">
+								</div>							
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+						<a id="id_create_project_ok" href="#" class="btn btn-primary ms-auto">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+								stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+								stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Create
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div id="id_modal_delete_project" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+			  <div class="modal-content">
+				<div class="modal-body">
+				  <div class="modal-title">Are you sure?</div>
+				  <div class="text-muted">Do you really want to delete project?</div>
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+				  <button id="id_delete_project_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+				</div>
+			  </div>
+			</div>
+		</div>
+	
+		<div id="modal-logout" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+			  <div class="modal-content">
+				<div class="modal-body">
+				  <div class="modal-title">Are you sure?</div>
+				  <div class="text-muted">Do you really want to logout?</div>
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+				  <button id="id_logout_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Logout</button>
+				</div>
+			  </div>
+			</div>
+		</div>	
+		<!-- // modal dialogs end -->
+			
+		<!-- // block content begin -->
+		{% block content %}
+		{% endblock %}
+		<!-- // block content end -->
+
+	</div>	
+	
+</body>
+
+</html>

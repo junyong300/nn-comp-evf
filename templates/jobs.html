@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script src="/static/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/apexcharts.min.js"></script>
+<script src="/static/src/jobs.js" defer></script>
+
+<div class="page-wrapper">
+	<div class="container-xl">
+		<!-- Page title -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<!-- Page pre-title -->
+					<div class="page-pretitle">
+						Jobs
+					</div>
+				</div>
+				<div class="col-12 col-md-auto ms-auto">
+					<div class="btn-list">
+						<div class="input-icon">
+							<span class="input-icon-addon">
+								<!-- Download SVG icon from http://tabler-icons.io/i/search -->
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+									height="24" viewBox="0 0 24 24" stroke-width="2"
+									stroke="currentColor" fill="none" stroke-linecap="round"
+									stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+									<circle cx="10" cy="10" r="7"></circle>
+									<line x1="21" y1="21" x2="15" y2="15"></line>
+								</svg>
+							</span>
+							<input id="id_search" type="text" value="" class="form-control" placeholder="Search..." aria-label="Search..." autocomplete="off">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="page-body">
+		<div class="container-xl">	
+			<div class="col-12">							
+				<div class="card">
+					<table class="table table-vcenter card-table">
+						<thead>
+							<tr>
+								<th class="w-auto">Model:Tag</th>
+								<th class="w-auto">Task</th>
+								<th class="w-auto">Job</th>
+								<th class="w-auto">Best accuracy</th>
+								<th class="w-auto">Elasped time</th>
+								<th class="w-auto">Progress</th>								
+								<th class="w-auto"></th>
+							</tr>
+						</thead>
+						<tbody id="id_table_body">
+							<!-- <tr>
+								<td>M1</td>
+								<td>C100</td>											
+								<td>Train</td>
+								<td>0.90</td>
+								<td class="text-sm-center">
+									<small class="text-sm-center">50%</small>
+									<progress class="progress" value="50" max="100"></progress>
+								</td>
+								<td>00:00:00</td>																			
+								<td class="text-end">
+									<div class="dropdown">
+										<button class="btn btn-sm dropdown-toggle" type="button" aria-haspopup="true" data-bs-toggle="dropdown">
+											Actions
+										</button>
+										<ul class="dropdown-menu">
+											<li><a class="dropdown-item" href="#">Cancel</a></li>
+											<li><a class="dropdown-item" href="#">Delete</a></li>
+											<li><a class="dropdown-item" href="#">Log</a></li>
+											<li><a class="dropdown-item" href="#">Graph</a></li>
+										</ul>
+									</div>
+								</td>
+							</tr> -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="id_modal_confirm" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+		  <div class="modal-content">
+			<div class="modal-body">
+			  <div class="modal-title">Are you sure?</div>
+			  <div id="id_modal_confirm_msg" class="text-muted">Do you really want to ?</div>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+			  <button id="id_modal_confirm_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Yes!</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+	
+	<div class="modal fade" id="id_modal_log" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Log</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>	
+				<div id="id_modal_log_msg" style="height: 30rem"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="id_modal_graph" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Graph</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>	
+				<div id="id_modal_graph_body" class="modal-body">
+					<div id="id_modal_graph_chart1" style="height: 30rem">a</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+
+</div>
+
+{% endblock %}

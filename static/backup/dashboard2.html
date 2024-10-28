@@ -1,0 +1,593 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Dashboard</title>
+	<!-- CSS files -->
+	<link href="./dist/css/tabler.min.css" rel="stylesheet" />
+	<!-- <link href="./dist/css/tabler-flags.min.css" rel="stylesheet"/>
+    <link href="./dist/css/tabler-payments.min.css" rel="stylesheet"/>
+    <link href="./dist/css/tabler-vendors.min.css" rel="stylesheet"/>
+    <link href="./dist/css/demo.min.css" rel="stylesheet"/> -->
+
+</head>
+
+<body class="layout-fluid">
+
+	<div class="page">
+	
+		<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+			<div class="container-fluid">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-brand navbar-brand-autodark justify-content-start">
+					<h2 class="page-title">
+						<img src="./images/logo.png" alt="VReID" class="navbar-brand-image">
+						</img>
+						<span class="p-2 text-white tracking-wide">VReID</span>
+					</h2>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar-menu">
+					<ul class="navbar-nav pt-lg-3">						
+						<li class="nav-item mx-3 mb-1 my-1">
+							<row class="d-flex justify-content-end">
+								<span class="badge badge-outline text-green mx-1">
+									<a href="#" id="id_create" class="text-green" title="create project" data-bs-toggle="modal" data-bs-target="#modal-create-project">create</a>
+								</span>
+								<span class="badge badge-outline text-red">
+									<a href="#" id="id_delete" class="text-red" title="delete project" data-bs-toggle="modal" data-bs-target="#modal-delete-project">delete</a>
+								</span>
+							</row>
+						</li>				
+						<li class="nav-item mx-3 mb-3">							
+							<select id="id_project" class="form-select text-black">
+								<!-- <option value="1">Project1</option>
+								<option value="2">Project2</option>
+								<option value="3">Project3</option> -->
+							</select>
+						</li>
+						<li class="nav-item active">
+							<a class="nav-link" href="./dashboard.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-layout-dashboard" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M4 4h6v8h-6z"></path>
+										<path d="M4 16h6v4h-6z"></path>
+										<path d="M14 12h6v8h-6z"></path>
+										<path d="M14 4h6v4h-6z"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Dashboard
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./tasks.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-list-check" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M3.5 5.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 11.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 17.5l1.5 1.5l2.5 -2.5"></path>
+										<line x1="11" y1="6" x2="20" y2="6"></line>
+										<line x1="11" y1="12" x2="20" y2="12"></line>
+										<line x1="11" y1="18" x2="20" y2="18"></line>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Tasks
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./models.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-box-model-2" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M8 8h8v8h-8z"></path>
+										<rect x="4" y="4" width="16" height="16" rx="2"></rect>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Models
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./jobs.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<polyline points="9 11 12 14 20 6" />
+										<path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Jobs
+								</span>
+							</a>
+						</li>
+					</ul>
+
+					<ul class="navbar-nav pt-lg-3 justify-content-end">
+						<li class="nav-item">
+							<div class="nav-link" href="">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<circle cx="12" cy="7" r="4"></circle>
+										<path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+									</svg>
+								</span>
+								<span id="id_user" class="nav-link-title">
+									Username
+								</span>
+							</div>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./form-elements.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path
+											d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+										</path>
+										<path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Logout
+								</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</aside>
+		<div class="page-wrapper">
+	
+			<div class="container-xl">
+				  
+				<!-- Page title -->
+				<div class="page-header d-print-none">
+					<div class="row g-2 align-items-center">
+						<div class="col">
+							<!-- Page pre-title -->
+							<div class="page-pretitle">
+								Dashboard
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="page-body">
+				<div class="container-xl">
+					
+					<div class="row row-deck row-cards">
+						<div class="col-sm-6 col-lg-4">
+							<div class="card">
+								<div class="card-body">
+									<div class="d-flex align-items-center">
+										<div class="subheader">CPU</div>
+									</div>
+									<div class="d-flex align-items-baseline">
+										<div class="h1 mb-0 me-2">50%</div>
+										<div class="me-auto">
+											<span class="text-red d-inline-flex align-items-center lh-1">
+												10%
+												<!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
+													height="24" viewBox="0 0 24 24" stroke-width="2"
+													stroke="currentColor" fill="none" stroke-linecap="round"
+													stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<polyline points="3 17 9 11 13 15 21 7" />
+													<polyline points="14 7 21 7 21 14" />
+												</svg>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="chart-cpu-bg" class="chart-sm"></div>
+							</div>
+						</div>
+
+						<div class="col-sm-6 col-lg-4">
+							<div class="card">
+								<div class="card-body">
+									<div class="d-flex align-items-center">
+										<div class="subheader">Memory</div>
+									</div>
+									<div class="d-flex align-items-baseline">
+										<div class="h1 mb-0 me-2">50%</div>
+										<div class="me-auto">
+											<span class="text-green d-inline-flex align-items-center lh-1">
+												10%
+												<!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
+													height="24" viewBox="0 0 24 24" stroke-width="2"
+													stroke="currentColor" fill="none" stroke-linecap="round"
+													stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<polyline points="3 17 9 11 13 15 21 7" />
+													<polyline points="14 7 21 7 21 14" />
+												</svg>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="chart-memory-bg" class="chart-sm"></div>
+							</div>
+						</div>
+
+						<div class="col-sm-6 col-lg-4">
+							<div class="card">
+								<div class="card-body">
+									<div class="d-flex align-items-center">
+										<div class="subheader">GPU</div>
+									</div>
+									<div class="d-flex align-items-baseline">
+										<div class="h1 mb-0 me-2">50%</div>
+										<div class="me-auto">
+											<span class="text-blue d-inline-flex align-items-center lh-1">
+												10%
+												<!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
+												<svg xmlns="http://www.w3.org/2000/svg" class="icon ms-1" width="24"
+													height="24" viewBox="0 0 24 24" stroke-width="2"
+													stroke="currentColor" fill="none" stroke-linecap="round"
+													stroke-linejoin="round">
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<polyline points="3 17 9 11 13 15 21 7" />
+													<polyline points="14 7 21 7 21 14" />
+												</svg>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div id="chart-gpu-bg" class="chart-sm"></div>
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+							<div class="card">
+								<div class="card-body">
+									<h3 class="card-title">Tasks</h3>
+									<div id="chart-mentions" class="chart-lg"></div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+							<div class="card">
+								<div class="card-body">
+									<h3 class="card-title">Jobs</h3>
+									<div id="chart-mentions" class="chart-lg"></div>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="col-lg-12">
+							<div class="row row-cards">
+								<div class="col-12">
+									<div class="card">
+										<div class="card-body">
+											<p class="mb-3">Job processing status: <strong>80%</strong></p>
+											<div class="progress progress-separated mb-3">
+												<div class="progress-bar bg-info" role="progressbar" style="width: 80%"
+													aria-label="Completed"></div>
+												<div class="progress-bar bg-success" role="progressbar"
+													style="width: 20%" aria-label="Working"></div>
+											</div>
+											<div class="row">
+												<div class="col-auto d-flex align-items-center pe-2">
+													<span class="legend me-2 bg-info"></span>
+													<span>Completed</span>
+													<span
+														class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">160</span>
+												</div>
+												<div class="col-auto d-flex align-items-center px-2">
+													<span class="legend me-2 bg-success"></span>
+													<span>Working</span>
+													<span
+														class="d-none d-md-inline d-lg-none d-xxl-inline ms-2 text-muted">40</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-12">
+									<div class="card" style="height: 50rem">
+										<div class="card-header">
+											<h3 class="card-title">Logs</h3>
+										</div>
+										<div class="card-body card-body-scrollable card-body-scrollable-shadow">
+											<div class="divide-y">
+												<div>
+													<div class="row">
+														<div class="col-auto">
+															<span class="avatar bg-red">New</span>
+														</div>
+														<div class="col">
+															<div class="text-truncate">
+																New job A created.
+															</div>
+															<div class="text-muted">1 hour ago</div>
+														</div>
+														<div class="col-auto align-self-center">
+															<div class="badge bg-primary"></div>
+														</div>
+													</div>
+												</div>
+												<div>
+													<div class="row">
+														<div class="col-auto">
+															<span class="avatar">Done</span>
+														</div>
+														<div class="col">
+
+															<div class="text-truncate">
+																Job A completed.
+															</div>
+															<div class="text-muted">2 days ago</div>
+														</div>
+
+														<div class="col-auto align-self-center">
+															<div class="badge bg-primary"></div>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<div id="modal-create-project" class="modal fade" tabindex="-1">
+		<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Create Project</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="mb-12">
+								<label class="form-label">Name</label>
+								<input id="id_project_name" type="text" class="form-control" name="example-text-input" placeholder="Name" autocomplete="off">
+							</div>							
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+					<a id="id_create_project_ok" href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+						<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+						<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+							stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+							stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<line x1="12" y1="5" x2="12" y2="19" />
+							<line x1="5" y1="12" x2="19" y2="12" />
+						</svg>
+						Create
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="modal-delete-project" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+		  <div class="modal-content">
+			<div class="modal-body">
+			  <div class="modal-title">Are you sure?</div>
+			  <div class="text-muted">Do you really want to delete project?</div>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
+			  <button id="id_delete_project_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+	<script src="./dist/js/tabler.min.js" defer></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.min.js"></script>
+	<script type="text/javascript" src="js/notify.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			init()
+			test()
+
+			// https://notifyjs.jpillora.com/
+			$.notify("Hello World");
+			$.notify("Access granted", "success");
+
+		});
+
+		function init() {
+			
+			$('#id_create').click(function () {
+				console.log("create!");
+				// $("#modal-create-project").modal('toggle')
+			})
+
+			$('#id_create_project_ok').click(function () {
+				console.log("id_create_project_ok!");
+				create_project()
+			})
+
+			$('#id_delete').click(function () {
+				console.log("delete!");
+			})
+
+			$('#id_delete_project_ok').click(function () {
+				console.log("id_delete_project_ok!");
+				delete_project()
+			})			
+
+			load_project_list()
+
+			// current user
+			user = $.cookie("user")
+			$('#id_user').html(user)
+		}
+
+		function load_project_list() {
+			$.ajax({
+				type: "post",
+				contentType: "application/json",
+				url: "/project/list",
+				// data: JSON.stringify({}),
+				dataType: 'json',
+				timeout: 60*1000,
+				success: function (msg) {
+					if (msg['err'] == null) {
+						update(msg['res'])
+					} else {
+						$.notify(msg['err']);
+					}
+				},
+				error: function (e) {
+					console.log(e)
+					$.notify(e);
+				}
+			});
+		}
+
+		function create_project() {
+			//get project name
+			name = $("#id_project_name").val()
+
+			$.ajax({
+				type: "post",
+				contentType: "application/json",
+				url: "/project/create",
+				data: JSON.stringify({"name":name}),
+				dataType: 'json',
+				timeout: 60*1000,
+				success: function (msg) {
+					if (msg['err'] == null) {
+						$.cookie("project", name);
+						$.notify("project has created!", "success");
+						load_project_list()
+					} else {
+						$.notify(msg['err']);
+					}
+				},
+				error: function (e) {
+					console.log(e)
+					$.notify(e);
+				}
+			});
+		}
+
+		function delete_project() {
+			//get project name
+			name = $("#id_project").val()
+
+			$.ajax({
+				type: "post",
+				contentType: "application/json",
+				url: "/project/delete",
+				data: JSON.stringify({"name":name}),
+				dataType: 'json',
+				timeout: 60*1000,
+				success: function (msg) {
+					if (msg['err'] == null) {
+						$.cookie("project", ""); // delete name!
+						$.notify("project has deleted!", "success");
+						load_project_list()
+					} else {
+						$.notify(msg['err']);
+					}
+				},
+				error: function (e) {
+					console.log(e)
+					$.notify(e);
+				}
+			});
+		}				
+
+		function update(data) {
+			console.log(data)
+
+			temp = ""
+			for (i = 0; i < data['projects'].length; i++) {
+				temp += `<option>${data['projects'][i]}</option>\n`
+			}
+			$('#id_project').html(temp)
+			$('#id_project').change(project_changed);
+
+			current_project = $.cookie("project")
+			console.log("current project:" + current_project)
+			
+			if (current_project != "") {
+				$("#id_project").val(current_project).change();
+			} else if (data['projects'].length > 0) {
+				$("#id_project").val(data['projects'][0]).change();
+			}
+		}
+
+		function project_changed() {
+			temp = $("#id_project :selected").val();
+			console.log(temp)
+
+			$.cookie("project", temp);
+			console.log("current project:" + $.cookie("project"))
+		}
+	</script>
+	<script>
+		function test() {
+			console.log("test message")
+		}
+	</script>
+</body>
+
+</html>

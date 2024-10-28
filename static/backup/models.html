@@ -1,0 +1,1360 @@
+<!doctype html>
+<!--
+* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
+* @version 1.0.0-beta10
+* @link https://tabler.io
+* Copyright 2018-2022 The Tabler Authors
+* Copyright 2018-2022 codecalm.net Paweł Kuna
+* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
+-->
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Models</title>
+	<!-- CSS files -->
+	<link href="./dist/css/tabler.min.css" rel="stylesheet" />
+	<link href="./dist/css/tabler-flags.min.css" rel="stylesheet" />
+	<link href="./dist/css/tabler-payments.min.css" rel="stylesheet" />
+	<link href="./dist/css/tabler-vendors.min.css" rel="stylesheet" />
+	<link href="./dist/css/demo.min.css" rel="stylesheet" />
+
+	<!-- <style type="text/css" media="screen">
+		#editor { 
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+		}
+	</style>	 -->
+
+</head>
+
+
+<body class=" layout-fluid">
+	<div class="page">
+		<aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+			<div class="container-fluid">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<h1 class="navbar-brand navbar-brand-autodark">
+				</h1>
+
+				<div class="collapse navbar-collapse" id="navbar-menu">
+					<ul class="navbar-nav pt-lg-3">
+						<li class="nav-item">
+							<a class="nav-link" href="./index.html">
+								<span class="nav-link-title">
+									<h2 class="page-title">
+										Project Name
+									</h2>
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./dashboard.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-layout-dashboard" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M4 4h6v8h-6z"></path>
+										<path d="M4 16h6v4h-6z"></path>
+										<path d="M14 12h6v8h-6z"></path>
+										<path d="M14 4h6v4h-6z"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Dashboard
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./tasks.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-list-check" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M3.5 5.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 11.5l1.5 1.5l2.5 -2.5"></path>
+										<path d="M3.5 17.5l1.5 1.5l2.5 -2.5"></path>
+										<line x1="11" y1="6" x2="20" y2="6"></line>
+										<line x1="11" y1="12" x2="20" y2="12"></line>
+										<line x1="11" y1="18" x2="20" y2="18"></line>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Tasks
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item active">
+							<a class="nav-link" href="./models.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg"
+										class="icon icon-tabler icon-tabler-box-model-2" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M8 8h8v8h-8z"></path>
+										<rect x="4" y="4" width="16" height="16" rx="2"></rect>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Models
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./jobs.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<polyline points="9 11 12 14 20 6" />
+										<path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Jobs
+								</span>
+							</a>
+						</li>
+					</ul>
+
+					<ul class="navbar-nav pt-lg-3 justify-content-end">
+						<li class="nav-item">
+							<a class="nav-link" href="">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<circle cx="12" cy="7" r="4"></circle>
+										<path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Username
+								</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="./form-elements.html">
+								<span class="nav-link-icon d-md-none d-lg-inline-block">
+									<!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+										width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+										stroke="currentColor" fill="none" stroke-linecap="round"
+										stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path
+											d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+										</path>
+										<path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+									</svg>
+								</span>
+								<span class="nav-link-title">
+									Logout
+								</span>
+							</a>
+						</li>
+					</ul>
+
+				</div>
+			</div>
+		</aside>
+		<div class="page-wrapper">
+			<div class="container-xl">
+				<!-- Page title -->
+				<div class="page-header">
+					<div class="row align-items-center">
+						<div class="col">
+							<!-- Page pre-title -->
+							<div class="page-pretitle">
+								Models
+							</div>
+						</div>
+
+						<div class="col-12 col-md-auto ms-auto">
+
+							<div class="btn-list">
+
+								<!-- <a href="#" class="btn btn-success">Save changes</a>
+								<a href="#" class="btn">Save and continue</a>
+								<a href="#" class="btn btn-danger">Cancel</a> -->
+
+								<div class="input-icon">
+									<span class="input-icon-addon">
+										<!-- Download SVG icon from http://tabler-icons.io/i/search -->
+										<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+											viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+											stroke-linecap="round" stroke-linejoin="round">
+											<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+											<circle cx="10" cy="10" r="7"></circle>
+											<line x1="21" y1="21" x2="15" y2="15"></line>
+										</svg>
+									</span>
+									<input id="search" type="text" value="" class="form-control" placeholder="Search..."
+										aria-label="Search..." autocomplete="off">
+								</div>
+
+
+								<a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-new">
+									<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<line x1="12" y1="5" x2="12" y2="19"></line>
+										<line x1="5" y1="12" x2="19" y2="12"></line>
+									</svg>
+									New
+								</a>
+
+								<a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-new" aria-label="create new task">
+									<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+									<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+										viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+										stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<line x1="12" y1="5" x2="12" y2="19"></line>
+										<line x1="5" y1="12" x2="19" y2="12"></line>
+									</svg>
+								</a>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="page-body">
+				<div class="container-xl">
+					<div class="col-12">
+						<div class="card">
+							<table class="table table-vcenter card-table">
+								<thead>
+									<tr>
+										<!-- "inference_time": 10,
+										"accuracy": 10,
+										"task_name": "dummy",
+										"num_parameters": 1,
+										"status": "uploaded",
+										"model_path": "dummy_path", -->
+										<th class="w-auto">Name</th>
+										<th class="w-auto">Model Path</th>
+										<th class="w-auto">Task</th>
+										<th class="w-auto">Inference Time</th>
+										<th class="w-auto">Accuracy</th>
+										<th class="w-auto">Parameter Count</th>
+										<th class="w-auto">Status</th>
+										<th class="w-auto"></th>
+									</tr>
+								</thead>
+								<tbody id="mytable">
+									<tr>
+										<td>EFNetB0</td>
+										<td>dummy_path</td>
+										<td class="text-muted">
+											CIFAR-100
+										</td>
+										<td class="text-muted">
+											10
+										</td>
+										<td class="text-muted">
+											0.9
+										</td>
+										<td class="text-muted">
+											10000
+										</td>
+										<td class="text-muted">
+											uploaded
+										</td>
+										<td class="text-end">
+											<div class="dropdown">
+												<button class="btn btn-sm dropdown-toggle" type="button"
+													aria-haspopup="true" data-bs-toggle="dropdown">
+													Actions
+												</button>
+												<ul class="dropdown-menu">
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-search">Search</a></li>
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-train">Train</a></li>
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-optimize">Optimize</a></li>
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-profile">Profile</a></li>
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-query">Query</a></li>
+													<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-eval">Eval</a></li>
+													<li><a class="dropdown-item" href="#">Delete</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+
+									<tr>
+										<td>EFNetB0</td>
+										<td>dummy_path</td>
+										<td class="text-muted">
+											CIFAR-100
+										</td>
+										<td class="text-muted">
+											10
+										</td>
+										<td class="text-muted">
+											0.9
+										</td>
+										<td class="text-muted">
+											10000
+										</td>
+										<td class="text-muted">
+											uploaded
+										</td>
+										<td class="text-end">
+											<div class="dropdown">
+												<button class="btn btn-sm dropdown-toggle" type="button"
+													aria-haspopup="true" data-bs-toggle="dropdown">
+													Actions
+												</button>
+												<ul class="dropdown-menu">
+													<li><a class="dropdown-item" href="#">Search</a></li>
+													<li><a class="dropdown-item" href="#">Train</a></li>
+													<li><a class="dropdown-item" href="#">Optimize</a></li>
+													<li><a class="dropdown-item" href="#">Profile</a></li>
+													<li><a class="dropdown-item" href="#">Query</a></li>
+													<li><a class="dropdown-item" href="#">Eval</a></li>
+													<li><a class="dropdown-item" href="#">Eval</a></li>
+													<li><a class="dropdown-item" href="#">Delete</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+
+									<tr>
+										<td>EFNetB0</td>
+										<td>dummy_path</td>
+										<td class="text-muted">
+											CIFAR-100
+										</td>
+										<td class="text-muted">
+											10
+										</td>
+										<td class="text-muted">
+											0.9
+										</td>
+										<td class="text-muted">
+											10000
+										</td>
+										<td class="text-muted">
+											uploaded
+										</td>
+										<td class="text-end">
+											<div class="dropdown">
+												<button class="btn btn-sm dropdown-toggle" type="button"
+													aria-haspopup="true" data-bs-toggle="dropdown">
+													Actions
+												</button>
+												<ul class="dropdown-menu">
+													<li><a class="dropdown-item" href="#">Search</a></li>
+													<li><a class="dropdown-item" href="#">Train</a></li>
+													<li><a class="dropdown-item" href="#">Optimize</a></li>
+													<li><a class="dropdown-item" href="#">Profile</a></li>
+													<li><a class="dropdown-item" href="#">Query</a></li>
+													<li><a class="dropdown-item" href="#">Eval</a></li>
+													<li><a class="dropdown-item" href="#">Eval</a></li>
+													<li><a class="dropdown-item" href="#">Delete</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal modal-blur fade" id="modal-new" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Model</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-4">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="mb-3">
+									<label class="form-label">Model Path</label>
+									<input type="text" value="dummy_path" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="row">
+							<div class="col-lg-3">
+								<div class="mb-3">
+									<label class="form-label">Inference Time</label>
+									<input type="number" value="100" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="mb-3">
+									<label class="form-label">Accuracy</label>
+									<input type="number" value="100" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="mb-3">
+									<label class="form-label">Parameter Count</label>
+									<input type="number" value="100" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-3">
+								<div class="mb-3">
+									<label class="form-label">Status</label>
+									<select class="form-select">
+										<option value="1">Uploaded</option>
+										<option value="2">Status2</option>
+										<option value="3">Status3</option>
+									</select>
+								</div>
+							</div>
+						</div> -->
+
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Definition</a></li>
+								<li class="nav-item"><a href="#tab-top-2" class="nav-link"
+										data-bs-toggle="tab">Preprocessing</a></li>
+								<li class="nav-item"><a href="#tab-top-3" class="nav-link"
+										data-bs-toggle="tab">Library</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="editor1" style="height: 25rem"></div>
+									</div>
+								</div>
+								<!-- Content of card #2 -->
+								<div id="tab-top-2" class="card tab-pane">
+									<div class="card-body">
+										<div id="editor2" style="height: 25rem"></div>
+									</div>
+								</div>
+
+								<!-- Content of card #3 -->
+								<div id="tab-top-3" class="card tab-pane">
+
+									<div class="card-body card-body-scrollable" style="height: 25rem">
+
+										<label class="form-check">
+											<input class="form-check-input" type="checkbox">
+											<span class="form-check-label">All</span>
+										</label>
+
+										<div>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">python</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">database</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">apple</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">kakao</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">naver</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">python</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">oracle</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">java2</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">sqlite</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">http</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">web</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">bitcoin</span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal modal-blur fade" id="modal-search" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Search</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Method</label>
+									<select class="form-select">
+										<option value="1">ENAS</option>
+										<option value="2">ENAS</option>
+										<option value="3">ENAS</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">GPU</label>
+									<input type="number" value="1" class="form-control" name="example-text-input"
+										placeholder="1">
+								</div>
+							</div>
+						</div>
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Options</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="search_editor1" style="height: 20rem"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal modal-blur fade" id="modal-train" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Train</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Tag</label>
+									<input type="text" value="Tag" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">GPU</label>
+									<input type="number" value="1" class="form-control" name="example-text-input"
+										placeholder="1">
+								</div>
+							</div>
+						</div>
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Options</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="train_editor1" style="height: 20rem"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal modal-blur fade" id="modal-optimize" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Optimize</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Tag</label>
+									<input type="text" value="Tag" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-2">
+								<div class="mb-3">
+									<label class="form-label">GPU</label>
+									<input type="number" value="1" class="form-control" name="example-text-input"
+										placeholder="1">
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="mb-3">
+									<label class="form-label">Method</label>
+									<select class="form-select">
+										<option value="1">Bespoke</option>
+										<option value="2">Bespoke</option>
+										<option value="3">Bespoke</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Options</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="optimize_editor1" style="height: 20rem"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal modal-blur fade" id="modal-profile" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Profile</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">GPU</label>
+									<input type="number" value="1" class="form-control" name="example-text-input"
+										placeholder="1">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Target</label>
+									<select class="form-select">
+										<option value="1">NVIDIA Jetson Nano</option>
+										<option value="2">NVIDIA Jetson Nano</option>
+										<option value="3">NVIDIA Jetson Nano</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Options</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="profile_editor1" style="height: 20rem"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal modal-blur fade" id="modal-query" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Query</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Name</label>
+									<input type="text" value="Name" class="form-control" name="example-text-input"
+										placeholder="0">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Task</label>
+									<select class="form-select">
+										<option value="1">CIFAR-100</option>
+										<option value="2">CIFAR-100</option>
+										<option value="3">CIFAR-100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Tag</label>
+									<input type="text" value="Tag" class="form-control" name="example-text-input"
+										placeholder="1">
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="mb-3">
+									<label class="form-label">Target</label>
+									<select class="form-select">
+										<option value="1">NVIDIA Jetson Nano</option>
+										<option value="2">NVIDIA Jetson Nano</option>
+										<option value="3">NVIDIA Jetson Nano</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="mb-3">
+						<label class="form-label">Path</label>
+						<input type="text" value="./path/model.pt" class="form-control" name="example-text-input" placeholder="0">
+					</div>					 -->
+
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Options</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="query_editor1" style="height: 20rem"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal modal-blur fade" id="modal-view" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">View</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-4">
+								<label class="form-label">Name</label>
+								<input type="text" value="Name" class="form-control" name="example-text-input"
+									placeholder="0">
+							</div>
+							<div class="col-lg-4">
+								<label class="form-label">Task</label>
+								<input type="text" value="Task" class="form-control" name="example-text-input"
+									placeholder="0">
+							</div>
+							<div class="col-lg-4">
+								<label class="form-label">Tag</label>
+								<select class="form-select">
+									<option value="1">Tag1</option>
+									<option value="2">Tag2</option>
+									<option value="3">Tag3</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-body">
+						<!-- Cards with tabs component -->
+						<div class="card-tabs ">
+							<!-- Cards navigation -->
+							<ul class="nav nav-tabs">
+								<li class="nav-item"><a href="#view_tab-top-1" class="nav-link active"
+										data-bs-toggle="tab">Definition</a></li>
+								<li class="nav-item"><a href="#view_tab-top-2" class="nav-link"
+										data-bs-toggle="tab">Preprocessing</a></li>
+								<li class="nav-item"><a href="#view_tab-top-3" class="nav-link"
+										data-bs-toggle="tab">Library</a></li>
+								<li class="nav-item"><a href="#view_tab-top-4" class="nav-link"
+										data-bs-toggle="tab">Graph</a></li>
+							</ul>
+							<div class="tab-content">
+								<!-- Content of card #1 -->
+								<div id="view_tab-top-1" class="card tab-pane active show">
+									<div class="card-body">
+										<div id="view_editor1" style="height: 25rem"></div>
+									</div>
+								</div>
+								<!-- Content of card #2 -->
+								<div id="view_tab-top-2" class="card tab-pane">
+									<div class="card-body">
+										<div id="view_editor2" style="height: 25rem"></div>
+									</div>
+								</div>
+
+								<!-- Content of card #3 -->
+								<div id="view_tab-top-3" class="card tab-pane">
+
+									<div class="card-body card-body-scrollable" style="height: 25rem">
+
+										<label class="form-check">
+											<input class="form-check-input" type="checkbox">
+											<span class="form-check-label">All</span>
+										</label>
+
+										<div>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">python</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">database</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">apple</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">kakao</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">naver</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">python</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">oracle</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">java2</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">sqlite</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox">
+												<span class="form-check-label">http</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" disabled="">
+												<span class="form-check-label">web</span>
+											</label>
+											<label class="form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" checked="">
+												<span class="form-check-label">bitcoin</span>
+											</label>
+										</div>
+									</div>
+								</div>
+								<!-- Content of card #4 -->
+								<div id="view_tab-top-4" class="card tab-pane">
+									<div class="card-body card-body-scrollable" style="height: 25rem">
+										<image src="./graph.png"></image>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+							Cancel
+						</a>
+						<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
+							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+								stroke-linecap="round" stroke-linejoin="round">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<line x1="12" y1="5" x2="12" y2="19" />
+								<line x1="5" y1="12" x2="19" y2="12" />
+							</svg>
+							Save
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="./ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mycode = `# -*- coding: utf-8 -*-
+import numpy as np
+import math
+
+# Create random input and output data
+x = np.linspace(-math.pi, math.pi, 2000)
+y = np.sin(x)
+
+# Randomly initialize weights
+a = np.random.randn()
+b = np.random.randn()
+c = np.random.randn()
+d = np.random.randn()
+
+learning_rate = 1e-6
+for t in range(2000):
+	# Forward pass: compute predicted y
+	# y = a + b x + c x^2 + d x^3
+	y_pred = a + b * x + c * x ** 2 + d * x ** 3
+
+	# Compute and print loss
+	loss = np.square(y_pred - y).sum()
+	if t % 100 == 99:
+		print(t, loss)
+
+	# Backprop to compute gradients of a, b, c, d with respect to loss
+	grad_y_pred = 2.0 * (y_pred - y)
+	grad_a = grad_y_pred.sum()
+	grad_b = (grad_y_pred * x).sum()
+	grad_c = (grad_y_pred * x ** 2).sum()
+	grad_d = (grad_y_pred * x ** 3).sum()
+
+	# Update weights
+	a -= learning_rate * grad_a
+	b -= learning_rate * grad_b
+	c -= learning_rate * grad_c
+	d -= learning_rate * grad_d
+
+print(f'Result: y = {a} + {b} x + {c} x^2 + {d} x^3')`
+
+			for (let i = 1; i <= 2; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/python");
+				editor.setValue(mycode, -1);
+			}
+
+
+			myoption = `epochs: 1000
+learning_rate: 100`
+
+			for (let i = 1; i <= 1; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("search_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/yaml");
+				editor.setValue(myoption, -1);
+			}
+
+			for (let i = 1; i <= 1; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("train_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/yaml");
+				editor.setValue(myoption, -1);
+			}
+
+			for (let i = 1; i <= 1; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("optimize_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/yaml");
+				editor.setValue(myoption, -1);
+			}
+
+			for (let i = 1; i <= 1; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("profile_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/yaml");
+				editor.setValue(myoption, -1);
+			}
+
+			for (let i = 1; i <= 1; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("query_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/yaml");
+				editor.setValue(myoption, -1);
+			}
+
+			for (let i = 1; i <= 2; i++) {
+				console.log(i);     // printing the value of i
+				var editor = ace.edit("view_editor" + i)
+				editor.setShowPrintMargin(false);
+				editor.setTheme("ace/theme/monokai");
+				editor.session.setMode("ace/mode/python");
+				editor.setValue(mycode, -1);
+			}
+
+
+		</script>
+
+
+		<!-- Tabler Core -->
+		<script src="./dist/js/tabler.min.js" defer></script>
+		<script src="./dist/js/demo.min.js" defer></script>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+		<script>hljs.highlightAll();</script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+		<script>
+			$(document).ready(function () {
+				$("#search").on("keyup", function () {
+					var value = $(this).val().toLowerCase();
+					$("#mytable tr").filter(function () {
+						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					});
+				});
+			});
+		</script>
+
+		<script>
+			function modal_edit(task_id) {
+				console.log("edit", task_id)
+				$("#modal-new").modal('toggle')
+			}
+
+			function modal_search(task_id) {
+				console.log("modal_search", task_id)
+				$("#modal-search").modal('toggle')
+			}
+
+			function modal_train(task_id) {
+				console.log("modal_train", task_id)
+				$("#modal-train").modal('toggle')
+			}
+
+			function modal_optimize(task_id) {
+				console.log("modal_train", task_id)
+				$("#modal-optimize").modal('toggle')
+			}
+
+			function modal_profile(task_id) {
+				console.log("modal_profile", task_id)
+				$("#modal-profile").modal('toggle')
+			}
+
+			function modal_query(task_id) {
+				console.log("modal_query", task_id)
+				$("#modal-query").modal('toggle')
+			}
+
+			function modal_view(task_id) {
+				console.log("modal_view", task_id)
+				$("#modal-view").modal('toggle')
+			}
+
+		</script>
+
+</body>
+
+</html>
