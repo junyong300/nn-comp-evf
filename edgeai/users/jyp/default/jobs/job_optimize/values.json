@@ -1,0 +1,16 @@
+{
+		"acc":{
+			"name": "epoch vs. acc.",
+			"x_name": "epoch",
+			"y_name": "acc",
+			"data": [
+			]
+		},
+		"loss":{
+			"name": "epoch vs. loss",
+			"x_name": "epoch",
+			"y_name": "loss",
+			"data": [
+			]
+		}
+}

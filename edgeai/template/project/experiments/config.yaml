@@ -1,0 +1,10 @@
+experiment_name: 'my_experiment'
+model:
+  module: 'my_model'
+  name: 'MyModel'
+dataset:
+  module: 'my_dataset'
+  name: 'MyDataset'
+training:
+  epochs: 10
+  batch_size: 32

@@ -1,0 +1,7 @@
+{
+	"num_gpus": 1,
+	"tag": "tag",
+	"mode": "optimize",
+	"model_name": "none",
+	"target": "naon"
+}

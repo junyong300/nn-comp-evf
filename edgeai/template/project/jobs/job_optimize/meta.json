@@ -1,0 +1,8 @@
+{
+	"status": "none",
+	"num_gpus": 1,
+	"method": "bespoke",
+  "model_name": "none",
+	"tag": "tag",
+	"mode": "optimize"
+}

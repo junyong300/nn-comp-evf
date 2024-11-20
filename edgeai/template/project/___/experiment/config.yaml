@@ -1,0 +1,26 @@
+# Training configuration
+batch_size: 128
+num_workers: 4
+num_epochs: 30
+learning_rate: 0.01
+momentum: 0.9
+weight_decay: 1e-4
+
+# Scheduler config
+scheduler_step_size: 7
+scheduler_gamma: 0.1
+
+# Hardware config
+device: 'cuda'
+gpu_ids: [0]
+
+# Dataset config
+num_classes: 100
+image_size: 224
+
+# Optimizer config 
+optimizer: 'sgd'  # ['sgd', 'adam']
+
+# Logging
+log_frequency: 100
+save_frequency: 1
