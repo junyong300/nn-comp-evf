@@ -2,786 +2,200 @@
 
 {% block content %}
 <div class="page-wrapper">
-	<div class="container-xl">
-		<!-- Page title -->
-		<div class="page-header">
-			<div class="row align-items-center">
+    <div class="container-xl">
+        <!-- Page title -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="page-pretitle">Models</div>
+                    <h2 class="page-title">Manage Models</h2>
+                </div>
+                <div class="col-12 col-md-auto ms-auto">
+                    <div class="btn-list">
+                        <!-- Search Box -->
+                        <div class="input-icon">
+                            <span class="input-icon-addon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <circle cx="10" cy="10" r="7"></circle>
+                                    <line x1="21" y1="21" x2="15" y2="15"></line>
+                                </svg>
+                            </span>
+                            <input id="id_search" type="text" class="form-control" placeholder="Search models..." 
+                                   aria-label="Search models">
+                        </div>
+                        
+                        <button id="id_create_model" class="btn btn-primary d-none d-sm-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            New Model
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<div class="col">
-					<!-- Page pre-title -->
-					<div class="page-pretitle">
-						Models
-					</div>
-				</div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Task Type</th>
+                                    <th>Model Path</th>
+                                    <th>Version</th>
+                                    <th>Status</th>
+                                    <th>Misc</th>
+                                    <th class="w-1">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="id_table_body">
+                                <!-- Dynamic model data rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-				<div class="col-12 col-md-auto ms-auto">
-					<div class="btn-list">
-						<div class="input-icon">
-							<span class="input-icon-addon">
-								<!-- Download SVG icon from http://tabler-icons.io/i/search -->
-								<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-									viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-									stroke-linecap="round" stroke-linejoin="round">
-									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-									<circle cx="10" cy="10" r="7"></circle>
-									<line x1="21" y1="21" x2="15" y2="15"></line>
-								</svg>
-							</span>
-							<input id="id_search" type="text" value="" class="form-control" placeholder="Search..." aria-label="Search..." autocomplete="off">
-						</div>
-						<!-- <a id="id_create_model" href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#id_modal_new_model"> -->
-						<a id="id_create_model" href="#" class="btn btn-primary d-none d-sm-inline-block">
-							<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-							<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-								viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-								stroke-linecap="round" stroke-linejoin="round">
-								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-								<line x1="12" y1="5" x2="12" y2="19"></line>
-								<line x1="5" y1="12" x2="19" y2="12"></line>
-							</svg>
-							New
-						</a>
-					</div>
-				</div>
+    <!-- New/Edit Model Modal -->
+    <div class="modal modal-blur fade" id="newModelModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Model</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label required">Model Name</label>
+                                    <input type="text" class="form-control" id="model_name" placeholder="Enter model name">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Model Path</label>
+                                    <input type="text" class="form-control" id="model_path" placeholder="Enter model path">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Task Type</label>
+                                    <select class="form-select" id="task_type">
+                                        <option value="Train">Train</option>
+                                        <option value="Inference">Inference</option>
+                                        <option value="Fine-tune">Fine-tune</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Status</label>
+                                    <input type="text" class="form-control" id="status" placeholder="Model status">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Version</label>
+                                    <input type="text" class="form-control" id="version" placeholder="Model version">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Misc</label>
+                                    <input type="text" class="form-control" id="misc" placeholder="Additional information">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-			</div>
-		</div>
-	</div>
+                    <div class="mb-3">
+                        <button id="addModuleButton" class="btn btn-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" 
+                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Module
+                        </button>
+                    </div>
 
-	<div class="page-body">
-		<div class="container-xl">
-			<div class="col-12">
-				<div class="card">
-					<table class="table table-vcenter card-table">
-						<thead>
-							<tr>
-								<th class="w-auto">Name</th>
-								<th class="w-auto">Model Path</th>
-								<th class="w-auto">Task</th>
-								<th class="w-auto">Inference Time</th>
-								<th class="w-auto">Accuracy</th>
-								<th class="w-auto">Parameter Count</th>
-								<th class="w-auto">Status</th>
-								<th class="w-auto"></th>
-							</tr>
-						</thead>
-						<tbody id="id_table_body">
-							<!-- <tr>
-								<td>EFNetB0</td>
-								<td>dummy_path</td>
-								<td class="text-muted">
-									CIFAR-100
-								</td>
-								<td class="text-muted">
-									10
-								</td>
-								<td class="text-muted">
-									0.9
-								</td>
-								<td class="text-muted">
-									10000
-								</td>
-								<td class="text-muted">
-									uploaded
-								</td>
-								<td class="text-end">
-									<div class="dropdown">
-										<button class="btn btn-sm dropdown-toggle" type="button" aria-haspopup="true" data-bs-toggle="dropdown">
-											Actions
-										</button>
-										<ul class="dropdown-menu">
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-search">Search</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-train">Train</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-optimize">Optimize</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-profile">Profile</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-query">Query</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-eval">Eval</a></li>
-											<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modal-view">View</a></li>
-											<li><a class="dropdown-item" href="#">Delete</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr> -->
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <!-- Code Editor Tabs -->
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="modelTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="config-tab" data-bs-toggle="tab" href="#config" 
+                                       role="tab">Config</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="model-tab" data-bs-toggle="tab" href="#model" 
+                                       role="tab">Model</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="callbacks-tab" data-bs-toggle="tab" href="#callbacks" 
+                                       role="tab">Callbacks</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="modelTabContent">
+                                <div class="tab-pane fade show active" id="config" role="tabpanel">
+                                    <div id="editor_config" style="height: 300px;"></div>
+                                </div>
+                                <div class="tab-pane fade" id="model" role="tabpanel">
+                                    <div id="editor_model" style="height: 300px;"></div>
+                                </div>
+                                <div class="tab-pane fade" id="callbacks" role="tabpanel">
+                                    <div id="editor_callbacks" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary ms-auto" id="id_save_model">
+                        Save Model
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal modal-blur fade" id="deleteConfirmModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-title">Are you sure?</div>
+                    <div class="text-muted">Do you really want to delete this model? This action cannot be undone.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete" data-bs-dismiss="modal">
+                        Yes, delete model
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="modal fade" id="id_modal_new_model" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Model</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_new_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>				
-				<div class="row">
-					<div class="col-lg-4">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_model_name" type="text" value="Name" class="form-control" name="example-text-input" placeholder="Name">
-						</div>
-					</div>
-					<div class="col-lg-4">
-						<div class="mb-3">
-							<label class="form-label">Model Path</label>
-							<input id="id_model_path" type="text" value="Path" class="form-control" name="example-text-input" placeholder="Path">
-						</div>
-					</div>
-					<div class="col-lg-4">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_task_name" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a id="id_tab_1" href="#id_tab_top_1" class="nav-link active" data-bs-toggle="tab">Definition</a></li>
-						<li class="nav-item"><a id="id_tab_2" href="#id_tab_top_2" class="nav-link" data-bs-toggle="tab">Preprocessing</a></li>
-						<li class="nav-item"><a id="id_tab_3" href="#id_tab_top_3" class="nav-link" data-bs-toggle="tab">Callbacks</a></li>								
-						<li class="nav-item"><a id="id_tab_4" href="#id_tab_top_4" class="nav-link" data-bs-toggle="tab">Library</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="id_tab_top_1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="editor1" style="height: 25rem"></div>
-							</div>
-						</div>
-						<!-- Content of card #2 -->
-						<div id="id_tab_top_2" class="card tab-pane">
-							<div class="card-body">
-								<div id="editor2" style="height: 25rem"></div>
-							</div>
-						</div>
-						<!-- Content of card #3 -->
-						<div id="id_tab_top_3" class="card tab-pane">
-							<div class="card-body">
-								<div id="editor3" style="height: 25rem"></div>
-							</div>
-						</div>						
-						<!-- Content of card #4 -->
-						<div id="id_tab_top_4" class="card tab-pane">
-							<div class="card-body card-body-scrollable">
-								<div id="id_libs" class="card-body-scrollable" style="height: 25rem">
-									<label class="form-check form-check-inline">
-										<input class="form-check-input" type="checkbox">
-										<span class="form-check-label">python</span>
-									</label>
-									<label class="form-check form-check-inline">
-										<input class="form-check-input" type="checkbox" disabled="">
-										<span class="form-check-label">database</span>
-									</label>
-									<label class="form-check form-check-inline">
-										<input class="form-check-input" type="checkbox" checked="">
-										<span class="form-check-label">apple</span>
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_create_model_ok" href="#" class="btn btn-primary ms-auto">
-					<!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-						viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-						stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-						<line x1="12" y1="5" x2="12" y2="19" />
-						<line x1="5" y1="12" x2="19" y2="12" />
-					</svg>
-					Create
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-search" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Search</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_search_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_search_name" type="text" class="form-control" placeholder="Name" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_search_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Method</label>
-							<select id="id_modal_search_method" class="form-select">
-								<option value="1">ENAS</option>
-								<option value="2">ENAS</option>
-								<option value="3">ENAS</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">GPU</label>
-							<input id="id_modal_search_gpu" type="number" min="0" value="1" class="form-control" placeholder="1">
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active" data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_search_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_search_ok" href="#" class="btn btn-primary ms-auto">
-					Search
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-train" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Train</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_train_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_train_name" type="text" value="Name" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Tag</label>
-							<input id="id_modal_train_tag" type="text" class="form-control" placeholder="Tag">
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">						
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_train_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">GPU</label>
-							<input id="id_modal_train_gpu" type="number" class="form-control" placeholder="1" min="0" value="1">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
-								data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_train_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_train_ok" href="#" class="btn btn-primary ms-auto">
-					Train
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-optimize" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Optimize</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_optimize_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>				
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_optimize_name" type="text" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Tag</label>
-							<input id="id_modal_optimize_tag" type="text" class="form-control" placeholder="Tag">
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_optimize_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-4">
-						<div class="mb-3">
-							<label class="form-label">Method</label>
-							<select id="id_modal_optimize_method" class="form-select">
-								<option value="1">Bespoke</option>
-								<option value="2">Bespoke</option>
-								<option value="3">Bespoke</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-2">
-						<div class="mb-3">
-							<label class="form-label">GPU</label>
-							<input id="id_modal_optimize_gpu" type="number" value="1" class="form-control" placeholder="1" min="0">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active"
-								data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_optimize_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_optimize_ok" href="#" class="btn btn-primary ms-auto">
-					Optimize
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-profile" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Profile</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_profile_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>				
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_profile_name" type="text" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_profile_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Target</label>
-							<select id="id_modal_profile_target" class="form-select">
-								<option value="1">NVIDIA Jetson Nano</option>
-								<option value="2">NVIDIA Jetson Nano</option>
-								<option value="3">NVIDIA Jetson Nano</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">GPU</label>
-							<input id="id_modal_profile_gpu" type="number" value="1" class="form-control" min="0">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active" data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_profile_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_profile_ok" href="#" class="btn btn-primary ms-auto">
-					Profile
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-query" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Query</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_query_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>				
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_query_name" type="text" value="Name" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Tag</label>
-							<input id="id_modal_query_tag" type="text" class="form-control" placeholder="Tag">
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_query_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Target</label>
-							<select id="id_modal_query_target" class="form-select">
-								<option value="1">NVIDIA Jetson Nano</option>
-								<option value="2">NVIDIA Jetson Nano</option>
-								<option value="3">NVIDIA Jetson Nano</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active" data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_query_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_query_ok" href="#" class="btn btn-primary ms-auto">
-					Query
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="modal-eval" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Evaluation</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="id_modal_eval_alert" class="alert alert-warning" role="alert">
-					alert message
-				</div>				
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Name</label>
-							<input id="id_modal_eval_name" type="text" value="Name" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="mb-3">
-							<label class="form-label">Task</label>
-							<select id="id_modal_eval_task" class="form-select">
-								<option value="1">CIFAR-100</option>
-								<option value="2">CIFAR-100</option>
-								<option value="3">CIFAR-100</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<!-- Cards with tabs component -->
-				<div class="card-tabs ">
-					<!-- Cards navigation -->
-					<ul class="nav nav-tabs">
-						<li class="nav-item"><a href="#tab-top-1" class="nav-link active" data-bs-toggle="tab">Options</a></li>
-					</ul>
-					<div class="tab-content">
-						<!-- Content of card #1 -->
-						<div id="tab-top-1" class="card tab-pane active show">
-							<div class="card-body">
-								<div id="id_modal_eval_editor1" style="height: 20rem"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-					Cancel
-				</a>
-				<a id="id_modal_eval_ok" href="#" class="btn btn-primary ms-auto">
-					Evaluate
-				</a>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<div class="modal fade" id="modal-view" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-fullscreen modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">View</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-
-			<div class="modal-body" style="height: 155px">
-				<div class="row">
-					<div class="col-lg-2">
-						<div class="mb-0">
-							<label class="form-label">Model</label>
-							<input id="id_graph_model" type="text" value="" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-2">
-						<div class="mb-0">
-							<label class="form-label">From</label>
-							<input id="id_graph_from" type="text" value="" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-2">
-						<div class="mb-0">
-							<label class="form-label">To</label>
-							<input id="id_graph_to" type="text" value="" class="form-control" readonly>
-						</div>
-					</div>
-					<div class="col-lg-1">
-						<div class="mb-0">
-							<label class="form-label">&nbsp;</label>
-							<a id="id_graph_get" href="#" class="btn btn-primary ms-auto disabled">
-								Get
-							</a>
-						</div>
-					</div>
-					<div class="col-lg-5">
-						<div class="mb-0">
-							<label class="form-label">Information</label>
-							<div id="id_graph_info" class="form-control-plaintext">...</div>
-						</div>						
-					</div>
-				</div>
-			</div>
-			<div class="modal-body" style="height: 100%; background-color: white">
-
-				<div id="id_view_graph" >
-				</div>
-
-			</div>
-		</div>
-	</div>
-</div>
-
-<div id="id_modal_confirm" class="modal fade" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-	  <div class="modal-content">
-		<div class="modal-body">
-		  <div class="modal-title">Are you sure?</div>
-		  <div id="id_modal_confirm_msg" class="text-muted">Do you really want to ?</div>
-		</div>
-
-		<div class="modal-footer">
-			<button type="button" class="btn btn-link link-secondary me-auto" data-bs-dismiss="modal">Cancel</button>
-			<button id="id_modal_confirm_ok" type="button" class="btn btn-danger" data-bs-dismiss="modal">Yes!</button>  
-			<!-- <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-				Cancel
-			</a>
-			<a id="id_modal_confirm_ok" href="#" class="btn btn-primary ms-auto">
-				Yes
-			</a> -->
-		</div>
-
-
-	  </div>
-	</div>
-</div>
-
-<script src="/static/ace/src-min/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="/static/src/models.js" type="text/javascript" charset="utf-8" defer></script>
-<script src='/static/js/cytoscape.min.js'></script>
-<script src="/static/js/cytoscape-node-html-label.js"></script>
-
-<style>
-	#id_view_graph {
-		width: auto;
-		height: 100%;
-		display: block;
-	}
-	
-	.nodeValue {
-		font-family: Tahoma, Verdana, sans-serif;
-		width: 280px;
-		font-size: 18px;
-		font-weight: bold;
-		padding: 5px;
-		border-radius: 5px;
-		background-color: #ffffff;
-		webkit-box-shadow: 0 5px 4px -4px #888 -moz-box-shadow: 0 5px 4px -4px #888;
-		box-shadow: 0 5px 4px -4px #888;
-		text-align: center;
-		justify-content: center;
-		margin-top: 10px;
-	}
-	
-	.nodeTitle {
-		font-family: Tahoma, Verdana, sans-serif;
-		font-size: 20px;
-		font-weight: bold;
-		padding: 5px;
-		margin-bottom: 0px;
-		/* text-shadow: 0.2px 0.2px 0 white; */
-		text-align: center;
-		justify-content: center;
-	}
-</style>
-
+<!-- Required Scripts -->
+<script src="/static/ace/src-min/ace.js"></script>
+<script src="/static/src/models.js"></script>
 {% endblock %}
