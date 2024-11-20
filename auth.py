@@ -100,7 +100,7 @@ def signup_post():
         f.write(json.dumps(db_users, indent=4))
 
     # create default project directory
-    shutil.copytree('./edgeai/blank_project', f'./edgeai/users/{user}/default')
+    shutil.copytree('./edgeai/template/project', f'./edgeai/users/{user}/default')
 
     return redirect(url_for('root'))
 
