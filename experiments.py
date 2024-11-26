@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session
 from auth import login_required, session_required
 import subprocess
-
+import yaml
 
 experiments = Blueprint('experiments', __name__)
 
@@ -86,7 +86,11 @@ def list_runs():
 
         # Construct path to runs directory
         runs_path = os.path.join('workspace', session['user'], project_name, 'experiments')
-        # ensure_path_exists(runs_path)
+
+        # Check if runs_path exists
+        if not os.path.exists(runs_path):
+            # Return an empty list of runs if the directory doesn't exist
+            return jsonify({"runs": []})
 
         # Get list of runs
         runs = []
@@ -131,13 +135,41 @@ def list_runs():
     except Exception as e:
         print(f"Error in list_runs: {str(e)}")
         return jsonify({"error": str(e)}), 500
-import shutil
 
 @experiments.route('/runs/create', methods=['POST'])
 @session_required
 def create_run():
     """Create a new run"""
     try:
+        project_name = request.json.get('project_name')
+        config = request.json.get('config')
+
+        if not project_name or not config:
+            return jsonify({"error": "Missing required parameters"}), 400
+
+        # Ensure 'model' and 'dataset' keys are present in 'config'
+        if 'model' not in config or 'dataset' not in config:
+            return jsonify({"error": "Config must include 'model' and 'dataset' keys"}), 400
+
+        # Generate run ID using timestamp
+        run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+        # Paths
+        user_workspace = os.path.join('workspace', session['user'], project_name)
+        run_dir = os.path.join(user_workspace, 'experiments', run_id)
+        template_dir = os.path.join('edgeai', 'template', 'project', 'experiments')
+
+        # Create run directory
+        ensure_path_exists(run_dir)
+
+        # Copy runs.py into the run directory
+        shutil.copy(os.path.join(template_dir, 'runs.py'), run_dir)
+
+        # Copy 'src' directory if needed
+        src_template_dir = os.path.join(template_dir, 'src')
+        if os.path.exists(src_template_dir):
+            shutil.copytree(src_template_dir, os.path.join(run_dir, 'src'))
+
         # Initialize status.json
         initial_status = {
             "current_status": "init",
@@ -148,37 +180,11 @@ def create_run():
         with open(os.path.join(run_dir, 'status.json'), 'w') as f:
             json.dump(initial_status, f, indent=2)
 
-        project_name = request.json.get('project_name')
-        config = request.json.get('config')
-    
-        if not project_name or not config:
-            return jsonify({"error": "Missing required parameters"}), 400
-
-        # Ensure 'model' and 'dataset' keys are present in 'config'
-        if 'model' not in config or 'dataset' not in config:
-            return jsonify({"error": "Config must include 'model' and 'dataset' keys"}), 400
-
-        # Generate run ID using timestamp
-        run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
-        # Paths
-        user_workspace = os.path.join('workspace', session['user'], project_name)
-        run_dir = os.path.join(user_workspace, 'experiments', run_id)
-        template_dir = os.path.join('edgeai', 'template', 'project', 'experiments')
-    
-        # Create run directory
-        ensure_path_exists(run_dir)
-    
-        # Copy template files into the new run directory
-        if os.path.exists(run_dir):
-            shutil.rmtree(run_dir)
-        shutil.copytree(template_dir, run_dir)
-        
         # Save config.yaml
         yaml_content = config.get('yaml_content', '')
         with open(os.path.join(run_dir, 'config.yaml'), 'w') as f:
             f.write(yaml_content)
-    
+
         # Save meta.json
         meta = {
             "name": config.get('experiment_name', 'Unnamed Experiment'),
@@ -193,19 +199,15 @@ def create_run():
         }
         with open(os.path.join(run_dir, 'meta.json'), 'w') as f:
             json.dump(meta, f, indent=2)
-    
-        # Generate runs.py
-        generate_runs_py(run_dir, config)
-    
+
         # Generate requirements.txt
         generate_requirements_txt(run_dir, meta['lib'])
-    
+
         return jsonify({
             "message": "Run created successfully",
             "run_id": run_id
         })
-    
-    
+
     except KeyError as e:
         error_message = f"Missing key in config: {e}"
         print(f"Error in create_run: {error_message}")
@@ -214,7 +216,7 @@ def create_run():
     except Exception as e:
         print(f"Error in create_run: {str(e)}")
         return jsonify({"error": str(e)}), 500
-    
+
 def generate_runs_py(run_dir, config):
     print("Config received in generate_runs_py:", config)
     print("config keys:", config.keys())
@@ -229,51 +231,49 @@ def generate_runs_py(run_dir, config):
         raise KeyError(error_message)
 
     runs_py_content = f"""
-import sys
-import os
-import json
-import yaml
+        import sys
+        import os
+        import json
+        import yaml
 
-# Add necessary paths to sys.path
-sys.path.append(os.path.join(os.getcwd(), 'datasets', 'src'))
-sys.path.append(os.path.join(os.getcwd(), 'models', 'src'))
-sys.path.append(os.path.join(os.getcwd(), 'libs'))
+        # Add necessary paths to sys.path
+        sys.path.append(os.path.join(os.getcwd(), 'datasets', 'src'))
+        sys.path.append(os.path.join(os.getcwd(), 'models', 'src'))
+        sys.path.append(os.path.join(os.getcwd(), 'libs'))
 
-from trainer import Trainer
-import {model_module_name} as model_module
-import {dataset_module_name} as dataset_module
+        from trainer import Trainer
+        import {model_module_name} as model_module
+        import {dataset_module_name} as dataset_module
 
-def main():
-    # Load configurations
-    with open('config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
+        def main():
+            # Load configurations
+            with open('config.yaml', 'r') as f:
+                config = yaml.safe_load(f)
 
-    # Initialize model and dataset
-    model = model_module.Model()
-    dataset = dataset_module.Dataset()
+            # Initialize model and dataset
+            model = model_module.Model()
+            dataset = dataset_module.Dataset()
 
-    # Initialize Trainer
-    trainer = Trainer(
-        model=model,
-        dataset=dataset,
-        config=config
-    )
+            # Initialize Trainer
+            trainer = Trainer(
+                model=model,
+                dataset=dataset,
+                config=config
+            )
 
-    # Start training
-    trainer.train()
+            # Start training
+            trainer.train()
 
-if __name__ == '__main__':
-    main()
-"""
+        if __name__ == '__main__':
+            main()
+        """
     with open(os.path.join(run_dir, 'runs.py'), 'w') as f:
         f.write(runs_py_content)
-
 
 def generate_requirements_txt(run_dir, libs):
     requirements = '\n'.join(libs)
     with open(os.path.join(run_dir, 'requirements.txt'), 'w') as f:
         f.write(requirements)
-
 
 @experiments.route('/runs/delete', methods=['POST'])
 @session_required
@@ -290,7 +290,7 @@ def delete_run():
             'workspace',
             session['user'],
             project_name,
-            'runs',
+            'experiments',  # Corrected directory
             run_id
         )
 
@@ -303,6 +303,29 @@ def delete_run():
     except Exception as e:
         print(f"Error in delete_run: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@experiments.route('/load_template', methods=['POST'])
+@session_required
+def load_template():
+    """Load experiment template files"""
+    try:
+        template_path = './edgeai/template/project/experiments'
+        
+        # Read template files
+        with open(os.path.join(template_path, 'runs.py'), 'r') as f:
+            runs_py = f.read()
+            
+        with open(os.path.join(template_path, 'config.yaml'), 'r') as f:
+            config_yaml = f.read()
+            
+        return jsonify({
+            'runs_py': runs_py,
+            'config_yaml': config_yaml
+        })
+        
+    except Exception as e:
+        print(f"Error loading templates: {str(e)}")
+        return jsonify({'err': str(e)}), 500
 
 @experiments.route('/runs/stop', methods=['POST'])
 @session_required
@@ -340,6 +363,103 @@ def stop_run():
 
     except Exception as e:
         print(f"Error in stop_run: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@experiments.route('/runs/get', methods=['POST'])
+@session_required
+def get_run():
+    """Get run details"""
+    try:
+        project_name = request.json.get('project_name')
+        run_id = request.json.get('run_id')
+
+        if not project_name or not run_id:
+            return jsonify({"error": "Missing required parameters"}), 400
+
+        run_dir = os.path.join(
+            'workspace',
+            session['user'],
+            project_name,
+            'experiments',
+            run_id
+        )
+
+        if not os.path.exists(run_dir):
+            return jsonify({"error": "Run not found"}), 404
+
+        # Read meta.json
+        with open(os.path.join(run_dir, 'meta.json'), 'r') as f:
+            meta = json.load(f)
+
+        # Read config.yaml
+        with open(os.path.join(run_dir, 'config.yaml'), 'r') as f:
+            config = yaml.safe_load(f)
+
+        run_data = {
+            "id": run_id,
+            "name": meta.get('name', 'Untitled'),
+            "type": meta.get('type', 'train'),
+            "description": meta.get('description', ''),
+            "config": config,
+            "model": meta.get('model_id'),
+            "dataset": meta.get('dataset_id')
+        }
+
+        return jsonify(run_data)
+
+    except Exception as e:
+        print(f"Error in get_run: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@experiments.route('/runs/update', methods=['POST'])
+@session_required
+def update_run():
+    """Update run configuration"""
+    try:
+        project_name = request.json.get('project_name')
+        run_id = request.json.get('run_id')
+        update_data = request.json.get('update_data')
+
+        if not all([project_name, run_id, update_data]):
+            return jsonify({"error": "Missing required parameters"}), 400
+
+        run_dir = os.path.join(
+            'workspace',
+            session['user'],
+            project_name,
+            'experiments',
+            run_id
+        )
+
+        if not os.path.exists(run_dir):
+            return jsonify({"error": "Run not found"}), 404
+
+        # Update meta.json
+        meta_path = os.path.join(run_dir, 'meta.json')
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+
+        meta.update({
+            "name": update_data.get('name', 'Untitled'),
+            "type": update_data.get('type'),
+            "description": update_data.get('description'),
+            "model_id": update_data['config']['model']['module'],
+            "dataset_id": update_data['config']['dataset']['module'],
+            "updated_at": datetime.now().isoformat()
+        })
+
+        with open(meta_path, 'w') as f:
+            json.dump(meta, f, indent=2)
+
+        # Update config.yaml
+        config_path = os.path.join(run_dir, 'config.yaml')
+        with open(config_path, 'w') as f:
+            yaml.dump(update_data['config'], f, default_flow_style=False)
+
+        return jsonify({"message": "Run updated successfully"})
+
+    except Exception as e:
+        print(f"Error in update_run: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @experiments.route('/list', methods=['POST'])
@@ -541,7 +661,6 @@ def copy_experiment():
         msg['err'] = str(e)
 
     return jsonify(msg)
-
 
 @experiments.route('/runs/start', methods=['POST'])
 @session_required
