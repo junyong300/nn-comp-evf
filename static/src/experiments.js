@@ -1,750 +1,578 @@
-/**
- * experiments.js
- * Handles the experiments/runs management interface
- */
-
-// Global state for run wizard
-const RunWizard = {
-    currentStep: 1,
-    config: {
-        basic: {
-            name: '',
-            type: 'train',
-            description: ''
-        },
-        training: {
-            batchSize: 32,
-            epochs: 100,
-            learningRate: 0.001,
-            optimizer: 'adam',
-            scheduler: 'cosine'
-        },
-        selection: {
-            modelId: null,
-            datasetId: null
-        }
-    }
-};
-
-// Initialize when document is ready
-$(document).ready(function() {
-    console.log('Initializing experiments page...');
-    initializeHandlers();
-    loadRunsList();
-    loadModelOptions();
-    loadDatasetOptions();
-});
-
-function updateWizardUI() {
-    const step = RunWizard.currentStep;
-    console.log('Updating UI for step:', step);
-
-    // Hide all step contents
-    $('.step-content').hide();
-
-    // Show the current step content
-    $(`#step${step}_content`).fadeIn();
-
-    // Update progress indicators
-    $('.step-item').removeClass('active');
-    for (let i = 1; i <= step; i++) {
-        $(`#step${i}-indicator`).addClass('active');
-    }
-
-    // Update button states
-    $('#run_wizard_back').prop('disabled', step === 1);
-    $('#run_wizard_next').text(step === 3 ? 'Create Run' : 'Next');
-
-    // Update form fields with the values from RunWizard.config
-    updateFormFields(step);
-}
-
-function updateFormFields(step) {
-    const config = RunWizard.config;
-
-    if (step === 1) {
-        // Basic configuration
-        $('#run_name').val(config.basic.name);
-        $('#run_type').val(config.basic.type);
-        $('#run_description').val(config.basic.description);
-    } else if (step === 2) {
-        // Training configuration
-        $('#batch_size').val(config.training.batchSize);
-        $('#epochs').val(config.training.epochs);
-        $('#learning_rate').val(config.training.learningRate);
-        $('#optimizer').val(config.training.optimizer);
-        $('#scheduler').val(config.training.scheduler);
-    } else if (step === 3) {
-        // Selection configuration
-        $('#model_dropdown').val(config.selection.modelId);
-        $('#dataset_dropdown').val(config.selection.datasetId);
-    }
-}
-
-function resetWizard() {
-    console.log('Resetting wizard');  // Debug log
-    RunWizard.currentStep = 1;
-    RunWizard.config = {
-        basic: {
-            name: '',
-            type: 'train',
-            description: ''
-        },
-        training: {
-            batchSize: 32,
-            epochs: 100,
-            learningRate: 0.001,
-            optimizer: 'adam',
-            scheduler: 'cosine'
-        },
-        selection: {
-            modelId: null,
-            datasetId: null
-        }
-    };
-
-    updateWizardUI();
-}
-
-/**
- * Initialize all event handlers
- */
-function initializeHandlers() {
-    console.log('Setting up event handlers...');
-    
-    // Remove any existing handlers first
-    $('#create_run_btn').off();
-    $('#run_wizard_next').off('click');
-    $('#run_wizard_back').off('click');
-
-    $('#run_wizard_next').on('click', handleWizardNext);
-    $('#run_wizard_back').on('click', handleWizardBack);
-
-    $('#run-wizard-modal').off();
-    $('#id_project').off();
-
-    // Create new run button
-    $('#create_run_btn').on('click', function(e) {
-        e.preventDefault();
-        console.log('Opening create run modal');
-        resetWizard();
-        const modal = new bootstrap.Modal(document.getElementById('run-wizard-modal'));
-        modal.show();
-    });
-
-    // Form input handlers
-    bindFormInputs();
-
-    // Modal reset
-    $('#run-wizard-modal').on('hidden.bs.modal', function() {
-        console.log('Modal hidden, resetting wizard');
-        resetWizard();
-    });
-
-    // Project change handler
-    $('#id_project').on('change', function() {
-        console.log('Project changed');
-        loadRunsList();
-    });
-}
-
-/**
- * Bind all form input handlers
- */
-function bindFormInputs() {
-    // Step 1: Basic Info
-    $('#run_name').on('input', function(e) {
-        const value = $(this).val().trim();
-        console.log('Run name changed:', value);
-        RunWizard.config.basic.name = value;  // Directly update the state
-        
-        // Optional: Real-time validation feedback
-        if (value) {
-            $(this).removeClass('is-invalid').addClass('is-valid');
+class Experiments {
+    debug(method, message, data = null) {
+        const debugMsg = `[Experiments.${method}] ${message}`;
+        if (data) {
+            console.log(debugMsg, data);
         } else {
-            $(this).removeClass('is-valid').addClass('is-invalid');
+            console.log(debugMsg);
         }
-    });
-
-    $('#run_type').on('change', function(e) {
-        const value = $(this).val();
-        console.log('Run type changed:', value);
-        RunWizard.config.basic.type = value;
-        updateTrainingConfigVisibility(value);
-    });
-
-    $('#run_description').on('input', function(e) {
-        RunWizard.config.basic.description = $(this).val().trim();
-    });
-
-    // Step 2: Training Config
-    $('#batch_size').on('input', function(e) {
-        const value = parseInt(e.target.value);
-        console.log('Batch size changed:', value);
-        updateConfig('training', 'batchSize', value);
-    });
-
-    $('#epochs').on('input', function(e) {
-        const value = parseInt(e.target.value);
-        console.log('Epochs changed:', value);
-        updateConfig('training', 'epochs', value);
-    });
-
-    $('#learning_rate').on('input', function(e) {
-        const value = parseFloat(e.target.value);
-        console.log('Learning rate changed:', value);
-        updateConfig('training', 'learningRate', value);
-    });
-
-    $('#optimizer').on('change', function(e) {
-        console.log('Optimizer changed:', e.target.value);
-        updateConfig('training', 'optimizer', e.target.value);
-    });
-
-    $('#scheduler').on('change', function(e) {
-        console.log('Scheduler changed:', e.target.value);
-        updateConfig('training', 'scheduler', e.target.value);
-    });
-
-    // Step 3: Model & Dataset Selection
-    $('#model_dropdown').on('change', function(e) {
-        const value = $(this).val();
-        console.log('Model selected:', value);
-        RunWizard.config.selection.modelId = value;
-    });
-
-    $('#dataset_dropdown').on('change', function(e) {
-        const value = $(this).val();
-        console.log('Dataset selected:', value);
-        RunWizard.config.selection.datasetId = value;
-    });
-}
-
-/**
- * Update configuration state
- */
-function updateConfig(section, field, value) {
-    console.log(`Updating config - ${section}.${field}:`, value);
-    RunWizard.config[section][field] = value;
-}
-
-/**
- * Handle next button click in wizard
- */
-async function handleWizardNext(e) {
-    // Prevent default button action
-    e && e.preventDefault();
-    
-    console.log('=== Next Button Clicked ===');
-    console.log('Current step:', RunWizard.currentStep);
-
-    // Now call validation
-    console.log('Starting validation for step:', RunWizard.currentStep);
-    const isValid = await validateStep();
-    console.log('Validation completed with result:', isValid);
-
-    if (!isValid) {
-        console.log('Validation failed, stopping');
-        return false;
     }
-
-    // If validation passed, proceed
-    if (RunWizard.currentStep < 3) {
-        RunWizard.currentStep++;
-        console.log('Moving to step:', RunWizard.currentStep);
-        updateWizardUI();
+    constructor() {
+        this.debug('constructor', 'Initializing Experiments class');
         
-        if (RunWizard.currentStep === 3) {
-            try {
-                await loadModelListDropdown('model_dropdown');
-                await loadDatasetListDropdown('dataset_dropdown');
-            } catch (error) {
-                console.error('Error loading models/datasets:', error);
-                alert("Error loading models or datasets");
-                return false;
-            }
-        }
-    } else {
-        await submitRun();
-    }
+        this.wizardConfig = { 
+            step: 1,
+            totalSteps: 3,
+            moduleCount: 0
+        };
+        this.debug('constructor', 'Wizard config initialized:', this.wizardConfig);
 
-    return true;
-}
-
-/**
- * Handle back button click in wizard
- */
-function handleWizardBack(e) {
-    // Prevent default button action
-    e && e.preventDefault();
-
-    if (RunWizard.currentStep > 1) {
-        RunWizard.currentStep--;
-        updateWizardUI();
-    }
-}
-
-/**
- * Validate the current step
- */
-async function validateStep() {
-    console.log('=== Validating Step ===');
-    console.log('Step:', RunWizard.currentStep);
-    console.log('Current config:', RunWizard.config);
-
-    try {
-        switch (RunWizard.currentStep) {
-            case 1: {
-                const name = RunWizard.config.basic.name;
-                const type = RunWizard.config.basic.type;
-                
-                console.log('Validating step 1:', { name, type });
-
-                if (!name || name.trim() === '') {
-                    console.log('Name validation failed');
-                    $('#run_name').addClass('is-invalid').focus();
-                    alert("Run name is required");
-                    return false;
-                }
-
-                $('#run_name').removeClass('is-invalid');
-                console.log('Step 1 validation passed');
-                return true;
-            }
-
-            case 2: {
-                console.log('Validating step 2');
-                if (RunWizard.config.basic.type === 'train' || 
-                    RunWizard.config.basic.type === 'finetune') {
-                    
-                    const batchSize = parseInt($('#batch_size').val());
-                    const epochs = parseInt($('#epochs').val());
-                    const learningRate = parseFloat($('#learning_rate').val());
-
-                    console.log('Validating training params:', {
-                        batchSize, epochs, learningRate
-                    });
-
-                    if (!batchSize || batchSize <= 0) {
-                        $('#batch_size').addClass('is-invalid').focus();
-                        alert("Invalid batch size");
-                        return false;
-                    }
-
-                    if (!epochs || epochs <= 0) {
-                        $('#epochs').addClass('is-invalid').focus();
-                        alert("Invalid number of epochs");
-                        return false;
-                    }
-
-                    if (!learningRate || learningRate <= 0) {
-                        $('#learning_rate').addClass('is-invalid').focus();
-                        alert("Invalid learning rate");
-                        return false;
-                    }
-
-                    // Update config with validated values
-                    RunWizard.config.training = {
-                        batchSize,
-                        epochs,
-                        learningRate,
-                        optimizer: $('#optimizer').val(),
-                        scheduler: $('#scheduler').val()
-                    };
-                }
-
-                console.log('Step 2 validation passed');
-                return true;
-            }
-
-            case 3: {
-                console.log('Validating step 3');
-                if (!RunWizard.config.selection.modelId) {
-                    alert("Please select a model");
-                    return false;
-                }
-
-                if (!RunWizard.config.selection.datasetId) {
-                    alert("Please select a dataset");
-                    return false;
-                }
-
-                console.log('Step 3 validation passed');
-                return true;
-            }
-
-            default: {
-                console.error('Invalid step:', RunWizard.currentStep);
-                return false;
-            }
-        }
-    } catch (error) {
-        console.error('Validation error:', error);
-        alert("An error occurred during validation");
-        return false;
-    }
-}
-
-/**
- * Loads and displays the list of runs for the current project
- */
-async function loadRunsList() {
-    try {
-        const projectName = sessionStorage.getItem("project_name");
-        if (!projectName) {
-            console.log("No project selected");
-            // Show empty state
-            showEmptyState("No project selected", "Please select a project to view runs.");
-            return;
-        }
-
-        console.log("Loading runs for project:", projectName);
+        this.config = { name: 'Unnamed' };
+        this.modules = [];
+        this.templatePath = '/edgeai/template/project/experiments';
         
-        // Show loading state
-        showLoadingState();
+        this.debug('constructor', 'Attempting to initialize editors');
+        try {
+            this.editors = {
+                config: ace.edit('editor_config'),
+                runs: ace.edit('editor_runs')
+            };
+            this.debug('constructor', 'Editors initialized successfully');
+        } catch (error) {
+            this.debug('constructor', 'Error initializing editors:', error);
+        }
 
-        const response = await fetch("/experiments/runs/list", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ project_name: projectName })
+        // Initialize event handlers on document ready
+        $(document).ready(() => {
+            this.debug('constructor', 'Document ready, initializing components');
+            this.initializeEventHandlers();
+            this.initializeEditors();
+            this.loadTemplates();
+        });
+    }
+
+    updateTemplatesWithSelections() {
+        const modelId = $('#model_dropdown').val();
+        const datasetId = $('#dataset_dropdown').val();
+
+        let configContent = this.editors.config.getValue();
+        let runsContent = this.editors.runs.getValue();
+
+        // Update config.yaml
+        configContent = configContent.replace(/model:\n  name:.*/, `model:\n  name: ${modelId}`);
+        configContent = configContent.replace(/dataset:\n  name:.*/, `dataset:\n  name: ${datasetId}`);
+
+        // Update runs.py
+        runsContent = runsContent.replace(/model = None.*/, `model = ${modelId}.Model()`);
+        runsContent = runsContent.replace(/dataset = None.*/, `dataset = ${datasetId}.Dataset()`);
+
+        this.editors.config.setValue(configContent, -1);
+        this.editors.runs.setValue(runsContent, -1);
+    }
+
+    async submitRun() {
+        try {
+            const projectName = sessionStorage.getItem("project_name");
+            if (!projectName) throw new Error("Please select a project first");
+
+            const config = {
+                name: this.config.name,
+                type: this.config.type,
+                description: this.config.description,
+                model: {
+                    module: this.config.modelId
+                },
+                dataset: {
+                    module: this.config.datasetId
+                },
+                runs_py: this.editors.runs.getValue(),
+                config_yaml: this.editors.config.getValue(),
+                modules: this.getModulesContent()
+            };
+
+            const response = await fetch("/experiments/runs/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    project_name: projectName,
+                    config: config
+                })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+
+            App.showNotification("Run created successfully!", "success");
+            $('#run-wizard-modal').modal('hide');
+            await this.loadRunsList();
+        } catch (error) {
+            console.error("Failed to submit run:", error);
+            App.showNotification(error.message, "error");
+        }
+    }
+
+    initializeEventHandlers() {
+        this.debug('initializeEventHandlers', 'Setting up event handlers');
+
+        // Wizard navigation buttons
+        $('#run_wizard_next').on('click', () => {
+            this.debug('initializeEventHandlers', 'Next button clicked');
+            this.handleNextStep();
+        });
+        
+        $('#run_wizard_back').on('click', () => {
+            this.debug('initializeEventHandlers', 'Back button clicked');
+            this.handlePreviousStep();
+        });
+        
+        // Modal events
+        $('#run-wizard-modal').on('shown.bs.modal', () => {
+            this.debug('initializeEventHandlers', 'Modal shown');
+            this.resetWizard();
+            if (this.editors.runs) {
+                this.editors.runs.resize();
+            }
+            if (this.editors.config) {
+                this.editors.config.resize();
+            }
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        this.debug('initializeEventHandlers', 'Event handlers initialized');
+    }
+
+    initializeEventHandlers() {
+        // Wizard navigation buttons
+        $('#run_wizard_next').on('click', () => this.handleNextStep());
+        $('#run_wizard_back').on('click', () => this.handlePreviousStep());
+        
+        // Initialize run modal events
+        $('#run-wizard-modal').on('shown.bs.modal', () => {
+            this.resetWizard();
+            if (this.editors.runs) {
+                this.editors.runs.resize();
+            }
+            if (this.editors.config) {
+                this.editors.config.resize();
+            }
+        });
+
+        // Module button
+        $('#addModuleButton').on('click', () => this.handleAddModule());
+    }
+
+    
+    async loadTemplates() {
+        try {
+            // Fetch template contents
+            const response = await fetch('/experiments/load_template', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load templates');
+            
+            const templates = await response.json();
+            
+            if (templates.err) {
+                throw new Error(templates.err);
+            }
+
+            // Set editor contents from templates
+            if (this.editors.runs) {
+                this.editors.runs.setValue(templates.runs_py || '', -1);
+            }
+            if (this.editors.config) {
+                this.editors.config.setValue(templates.config_yaml || '', -1);
+            }
+
+            console.log('Templates loaded successfully');
+        } catch (error) {
+            console.error('Error loading templates:', error);
+            App.showNotification('Error loading templates: ' + error.message, 'error');
         }
+    }
+    
+    initializeEditors() {
+        // Initialize Ace editors
+        this.editors.runs = ace.edit('editor_runs');
+        this.editors.runs.setTheme("ace/theme/monokai");
+        this.editors.runs.session.setMode("ace/mode/python");
+        this.editors.runs.setShowPrintMargin(false);
 
-        const data = await response.json();
-        console.log("Received runs data:", data);
+        this.editors.config = ace.edit('editor_config');
+        this.editors.config.setTheme("ace/theme/monokai");
+        this.editors.config.session.setMode("ace/mode/yaml");
+        this.editors.config.setShowPrintMargin(false);
 
-        if (data.error) {
-            throw new Error(data.error);
-        }
+        // Set initial content
+        this.setDefaultEditorContent();
+    }
 
-        if (!data.runs || data.runs.length === 0) {
-            showEmptyState("No runs found", "Click 'New Run' to create your first run.");
+    
+    handleNextStep() {
+        this.debug('handleNextStep', `Current step: ${this.wizardConfig.step}`);
+        
+        // Validate current step
+        if (!this.validateCurrentStep()) {
+            this.debug('handleNextStep', 'Validation failed for current step');
             return;
         }
 
-        updateRunsTable(data.runs);
-
-    } catch (error) {
-        console.error("Failed to load runs:", error);
-        showErrorState(error.message);
+        if (this.wizardConfig.step < this.wizardConfig.totalSteps) {
+            this.wizardConfig.step++;
+            this.debug('handleNextStep', `Moving to step ${this.wizardConfig.step}`);
+            this.updateWizardUI();
+        } else {
+            this.debug('handleNextStep', 'On final step, submitting run');
+            this.submitRun();
+        }
     }
-}
 
-/**
- * Updates the runs table with the provided data
- */
-function updateRunsTable(runs) {
-    const tableBody = $('#runs_table_body');
-    tableBody.empty();
+    handlePreviousStep() {
+        if (this.wizardConfig.step > 1) {
+            this.wizardConfig.step--;
+            this.updateWizardUI();
+        }
+    }
 
-    runs.forEach(run => {
-        const row = `
+    validateCurrentStep() {
+        this.debug('validateCurrentStep', `Validating step ${this.wizardConfig.step}`);
+        
+        switch(this.wizardConfig.step) {
+            case 1:
+                const runName = $('#run_name').val();
+                this.debug('validateCurrentStep', 'Step 1 - Run name:', runName);
+                
+                if (!runName) {
+                    this.debug('validateCurrentStep', 'Step 1 validation failed: No run name');
+                    App.showNotification("Run name is required", "error");
+                    return false;
+                }
+                
+                this.config.name = runName;
+                this.config.type = $('#run_type').val();
+                this.config.description = $('#run_description').val();
+                
+                this.debug('validateCurrentStep', 'Step 1 validation passed, config:', this.config);
+                return true;
+
+            case 2:
+                const modelId = $('#model_dropdown').val();
+                const datasetId = $('#dataset_dropdown').val();
+                
+                this.debug('validateCurrentStep', 'Step 2 - Model:', modelId, 'Dataset:', datasetId);
+                
+                if (!modelId || !datasetId) {
+                    this.debug('validateCurrentStep', 'Step 2 validation failed: Missing model or dataset');
+                    App.showNotification("Please select both model and dataset", "error");
+                    return false;
+                }
+                
+                this.config.modelId = modelId;
+                this.config.datasetId = datasetId;
+                this.updateTemplatesWithSelections();
+                
+                this.debug('validateCurrentStep', 'Step 2 validation passed');
+                return true;
+
+            case 3:
+                this.debug('validateCurrentStep', 'Step 3 validation passed (no validation needed)');
+                return true;
+
+            default:
+                this.debug('validateCurrentStep', `Unknown step ${this.wizardConfig.step}`);
+                return true;
+        }
+    }
+
+    resetWizard() {
+        this.wizardConfig.step = 1;
+        this.config = { name: 'Unnamed' };
+        this.modules = [];
+        this.updateWizardUI();
+
+        // Reset form fields
+        $('input, select, textarea').each(function() {
+            $(this).val($(this).prop('defaultValue'));
+        });
+    }
+
+    // Utility methods
+    getStatusBadgeClass(status) {
+        const classes = {
+            'running': 'bg-green',
+            'stopped': 'bg-yellow',
+            'completed': 'bg-blue',
+            'failed': 'bg-red',
+            'pending': 'bg-gray'
+        };
+        return classes[status.toLowerCase()] || 'bg-secondary';
+    }
+
+    showEmptyState(title, message) {
+        $('#runs_table_body').html(`
             <tr>
-                <td>
-                    <div class="d-flex align-items-center">
-                        <span class="text-truncate">${run.name}</span>
+                <td colspan="8" class="text-center p-4">
+                    <div class="empty">
+                        <p class="empty-title">${title}</p>
+                        <p class="empty-subtitle text-muted">${message}</p>
                     </div>
                 </td>
-                <td>
-                    <span class="text-muted">${run.type}</span>
-                </td>
-                <td>
-                    <span class="text-truncate">${run.model}</span>
-                </td>
-                <td>
-                    <span class="text-truncate">${run.dataset}</span>
-                </td>
-                <td>
-                    <span class="badge bg-${getStatusBadgeColor(run.status)}">
-                        ${run.status}
-                    </span>
-                </td>
-                <td class="w-25">
-                    <div class="progress">
-                        <div class="progress-bar" style="width: ${run.progress || 0}%">
-                            ${run.progress || 0}%
-                        </div>
-                    </div>
-                </td>
-                <td class="text-end">
-                    <div class="dropdown">
-                        <button class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                            Actions
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            ${getRunActionButtons(run)}
+            </tr>
+        `);
+    }
+
+    showErrorState(error) {
+        $('#runs_table_body').html(`
+            <tr>
+                <td colspan="8" class="text-center p-4">
+                    <div class="empty">
+                        <p class="empty-title">Error loading runs</p>
+                        <p class="empty-subtitle text-muted">${error}</p>
+                        <div class="empty-action">
+                            <button onclick="Experiments.loadRunsList()" class="btn btn-primary">Retry</button>
                         </div>
                     </div>
                 </td>
             </tr>
-        `;
-        tableBody.append(row);
-    });
-}
-
-/**
- * Shows loading state in the table
- */
-function showLoadingState() {
-    const tableBody = $('#runs_table_body');
-    tableBody.html(`
-        <tr>
-            <td colspan="7" class="text-center p-4">
-                <div class="d-flex flex-column align-items-center">
-                    <div class="spinner-border text-primary mb-2" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <div>Loading runs...</div>
-                </div>
-            </td>
-        </tr>
-    `);
-}
-
-/**
- * Shows empty state in the table
- */
-function showEmptyState(title, message) {
-    const tableBody = $('#runs_table_body');
-    tableBody.html(`
-        <tr>
-            <td colspan="7" class="text-center p-4">
-                <div class="empty">
-                    <div class="empty-icon">
-                        <!-- Add an appropriate icon -->
-                    </div>
-                    <p class="empty-title">${title}</p>
-                    <p class="empty-subtitle text-muted">${message}</p>
-                </div>
-            </td>
-        </tr>
-    `);
-}
-
-/**
- * Shows error state in the table
- */
-function showErrorState(error) {
-    const tableBody = $('#runs_table_body');
-    tableBody.html(`
-        <tr>
-            <td colspan="7" class="text-center p-4">
-                <div class="empty">
-                    <div class="empty-icon">
-                        <!-- Add an appropriate icon -->
-                    </div>
-                    <p class="empty-title">Error loading runs</p>
-                    <p class="empty-subtitle text-muted">${error}</p>
-                    <div class="empty-action">
-                        <button onclick="loadRunsList()" class="btn btn-primary">
-                            Retry
-                        </button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    `);
-}
-
-/**
- * Helper function to get the appropriate badge color for a status
- */
-function getStatusBadgeColor(status) {
-    switch (status.toLowerCase()) {
-        case 'running': return 'blue';
-        case 'completed': return 'green';
-        case 'failed': return 'red';
-        case 'pending': return 'yellow';
-        default: return 'secondary';
-    }
-}
-
-/**
- * Helper function to get the action buttons for a run
- */
-function getRunActionButtons(run) {
-    const buttons = [];
-    
-    if (run.status === 'running') {
-        buttons.push(`
-            <a class="dropdown-item" href="#" onclick="stopRun('${run.id}')">
-                Stop
-            </a>
         `);
     }
-    
-    if (run.status === 'completed') {
-        buttons.push(`
-            <a class="dropdown-item" href="#" onclick="viewResults('${run.id}')">
-                Results
-            </a>
-        `);
+
+    // SVG Icons
+    getPlayIcon() {
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" 
+                     stroke-width="2" stroke="currentColor" fill="none">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M7 4v16l13 -8z"/>
+                </svg>`;
     }
-    
-    buttons.push(`
-        <a class="dropdown-item" href="#" onclick="deleteRun('${run.id}')">
-            Delete
-        </a>
-    `);
 
-    return buttons.join('');
-}
+    getPauseIcon() {
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" 
+                     stroke-width="2" stroke="currentColor" fill="none">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <rect x="6" y="5" width="4" height="14" rx="1"/>
+                    <rect x="14" y="5" width="4" height="14" rx="1"/>
+                </svg>`;
+    }
 
-async function submitRun() {
-    const selectedModelModule = $('#model_dropdown').val();  // Get selected model
-    const selectedDatasetModule = $('#dataset_dropdown').val();  // Get selected dataset
-    const experimentName = $('#run_name').val() || 'my_experiment';
-    const epochs = parseInt($('#epochs').val()) || 10;
-    const batchSize = parseInt($('#batch_size').val()) || 32;
-    const learningRate = parseFloat($('#learning_rate').val()) || 0.001;
-    const optimizer = $('#optimizer').val() || 'adam';
-    const scheduler = $('#scheduler').val() || 'cosine';
+    getEditIcon() {
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" 
+                     stroke-width="2" stroke="currentColor" fill="none">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/>
+                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/>
+                    <path d="M16 5l3 3"/>
+                </svg>`;
+    }
 
-    console.log('Selected Model Module:', selectedModelModule);
-    console.log('Selected Dataset Module:', selectedDatasetModule);
+    getDeleteIcon() {
+        return `<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" 
+                     stroke-width="2" stroke="currentColor" fill="none">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <line x1="4" y1="7" x2="20" y2="7"/>
+                    <line x1="10" y1="11" x2="10" y2="17"/>
+                    <line x1="14" y1="11" x2="14" y2="17"/>
+                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                </svg>`;
+    }
 
-    try {
-        const projectName = sessionStorage.getItem("project_name");
-        if (!projectName) {
-            alert("Project name is missing. Please select a project.");
-            return;
-        }
+    async handleAddModule() {
+        this.wizardConfig.moduleCount++;
+        const moduleName = `module${this.wizardConfig.moduleCount}`;
+        
+        // Add new tab
+        const tab = $(`
+            <li class="nav-item">
+                <a class="nav-link" id="${moduleName}-tab" data-bs-toggle="tab" href="#${moduleName}" role="tab">
+                    ${moduleName}.py
+                </a>
+            </li>
+        `);
+        $('#runCodeTabs').append(tab);
 
-        // Ensure RunWizard.config is an object
-        RunWizard.config = RunWizard.config || {};
+        // Add new editor container
+        const editorContainer = $(`
+            <div class="tab-pane fade" id="${moduleName}" role="tabpanel">
+                <div id="editor_${moduleName}" style="height: 400px;"></div>
+            </div>
+        `);
+        $('#runCodeContent').append(editorContainer);
 
-        // Add collected data to RunWizard.config
-        RunWizard.config.experiment_name = experimentName;
-        RunWizard.config.model = {
-            module: selectedModelModule,
-            name: selectedModelModule  // Adjust if you have a display name
-        };
-        RunWizard.config.dataset = {
-            module: selectedDatasetModule,
-            name: selectedDatasetModule  // Adjust if you have a display name
-        };
-        RunWizard.config.training = {
-            epochs: epochs,
-            batch_size: batchSize,
-            learning_rate: learningRate,
-            optimizer: optimizer,
-            scheduler: scheduler
-        };
-        // Add other configurations if necessary
-        RunWizard.config.training_count = 1000;  // Update as needed
-        RunWizard.config.validation_count = 200;  // Update as needed
-        RunWizard.config.libs = ['torch', 'numpy'];  // Update as needed
-
-        // Generate yaml_content
-        RunWizard.config.yaml_content = generateYamlContent(RunWizard.config);
-
-        console.log('Submitting run with config:', RunWizard.config);
-
-        const response = await fetch("/experiments/runs/create", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                project_name: projectName,
-                config: RunWizard.config
-            })
+        // Initialize new editor
+        const editor = ace.edit(`editor_${moduleName}`);
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+        editor.setShowPrintMargin(false);
+        editor.setValue(`# ${moduleName}.py\n\n`, -1);
+        
+        this.modules.push({
+            name: moduleName,
+            editor: editor
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-            throw new Error(data.error);
-        }
-
-        alert("Run created successfully!");
-        const modal = bootstrap.Modal.getInstance(document.getElementById('run-wizard-modal'));
-        modal.hide();
-
-        loadRunsList();
-
-    } catch (error) {
-        console.error("Failed to submit run:", error);
-        alert("Failed to create run: " + error.message);
+        // Switch to new tab
+        $(`#${moduleName}-tab`).tab('show');
     }
-}
 
+    async toggleRunStatus(runId, currentStatus) {
+        try {
+            const action = currentStatus === 'running' ? 'stop' : 'start';
+            const projectName = sessionStorage.getItem("project_name");
+            const response = await fetch(`/experiments/runs/${action}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    project_name: projectName,
+                    run_id: runId
+                })
+            });
 
-// Additional functions as needed, such as stopRun, viewResults, deleteRun
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
 
-// Update training config visibility based on run type
-function updateTrainingConfigVisibility(type) {
-    if (type === 'train' || type === 'finetune') {
-        $('#training_config_fields').show();
-    } else {
-        $('#training_config_fields').hide();
+            App.showNotification(`Run ${action}ed successfully!`, "success");
+            await this.loadRunsList();
+        } catch (error) {
+            console.error("Failed to ${action} run:", error);
+            App.showNotification(error.message, "error");
+        }
     }
+
+    updateWizardUI() {
+        this.debug('updateWizardUI', `Updating UI for step ${this.wizardConfig.step}`);
+
+        // Update step indicators
+        this.debug('updateWizardUI', 'Updating step indicators');
+        $('.step-item').removeClass('active');
+        $(`#step${this.wizardConfig.step}-indicator`).addClass('active');
+
+        // Show/hide content
+        this.debug('updateWizardUI', 'Updating step content visibility');
+        $('.step-content').hide();
+        const currentContent = $(`#step${this.wizardConfig.step}_content`);
+        this.debug('updateWizardUI', 'Current content element:', currentContent[0]);
+        currentContent.show();
+
+        // Update buttons
+        const $backBtn = $('#run_wizard_back');
+        const $nextBtn = $('#run_wizard_next');
+
+        this.debug('updateWizardUI', 'Updating button states');
+        $backBtn.prop('disabled', this.wizardConfig.step === 1);
+        $nextBtn.text(this.wizardConfig.step === this.wizardConfig.totalSteps ? 'Create Run' : 'Next');
+
+        // Resize editors if on step 3
+        if (this.wizardConfig.step === 3) {
+            this.debug('updateWizardUI', 'On step 3, resizing editors');
+            Object.values(this.editors).forEach(editor => {
+                try {
+                    editor.resize();
+                    this.debug('updateWizardUI', 'Editor resized successfully');
+                } catch (error) {
+                    this.debug('updateWizardUI', 'Error resizing editor:', error);
+                }
+            });
+        }
+    }
+    
+
+    async showDeleteConfirmation(runId) {
+        const modal = new bootstrap.Modal(document.getElementById('delete-confirm-modal'));
+        const confirmButton = document.getElementById('confirm-delete-btn');
+        
+        // Remove any existing click handlers
+        confirmButton.replaceWith(confirmButton.cloneNode(true));
+        const newConfirmButton = document.getElementById('confirm-delete-btn');
+        
+        // Add click handler
+        newConfirmButton.addEventListener('click', async () => {
+            try {
+                const projectName = sessionStorage.getItem("project_name");
+                if (!projectName) throw new Error("Project name is missing");
+
+                const response = await fetch("/experiments/runs/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        project_name: projectName,
+                        run_id: runId
+                    })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                modal.hide();
+                App.showNotification("Run deleted successfully!", "success");
+                await this.loadRunsList();
+
+            } catch (error) {
+                console.error("Failed to delete run:", error);
+                App.showNotification(error.message, "error");
+        }
+        });
+        modal.show();
+    }
+
+    async editRun(runId) {
+        try {
+            const projectName = sessionStorage.getItem("project_name");
+            if (!projectName) throw new Error("Project name is missing");
+
+            const response = await fetch("/experiments/runs/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    project_name: projectName,
+                    run_id: runId
+                })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+
+            // Populate form with run data
+            $('#run_name').val(data.name || 'Unnamed');
+            $('#run_type').val(data.type);
+            $('#run_description').val(data.description || '');
+            $('#model_dropdown').val(data.model);
+            $('#dataset_dropdown').val(data.dataset);
+
+            // Set editor contents
+            this.editors.runs.setValue(data.runs_py || '', -1);
+            this.editors.config.setValue(data.config_yaml || '', -1);
+
+            // Handle additional modules if any
+            if (data.modules) {
+                Object.entries(data.modules).forEach(([name, content]) => {
+                    this.handleAddModule();
+                    const module = this.modules[this.modules.length - 1];
+                    module.editor.setValue(content, -1);
+                });
+            }
+
+            // Show modal in edit mode
+            const modal = document.getElementById('run-wizard-modal');
+            modal.setAttribute('data-mode', 'edit');
+            modal.setAttribute('data-run-id', runId);
+            modal.querySelector('.modal-title').textContent = 'Edit Run';
+            
+            new bootstrap.Modal(modal).show();
+
+        } catch (error) {
+            console.error("Failed to edit run:", error);
+                App.showNotification(error.message, "error");
+        }
+    }
+    
 }
-/**
- * Function to generate YAML content from the configuration object
- * @param {Object} config - The configuration object
- * @returns {string} - The YAML content as a string
- */
-function generateYamlContent(config) {
-    // Build the YAML content
-    let yamlContent = `
-        experiment_name: '${config.experiment_name || 'my_experiment'}'
-        model:
-        module: '${config.model.module}'
-        name: '${config.model.name}'
-        dataset:
-        module: '${config.dataset.module}'
-        name: '${config.dataset.name}'
-        training:
-        epochs: ${config.training.epochs}
-        batch_size: ${config.training.batch_size}
-        `;
 
-    // Return the generated YAML content
-    return yamlContent;
-}
-
-function loadModelOptions() {
-    const modelDropdown = $('#model_dropdown');
-    modelDropdown.empty();  // Clear existing options
-
-    // Example models; replace with your actual data
-    const models = [
-        { module: 'vit_b_16', name: 'ViT Base 16' },
-        { module: 'resnet50', name: 'ResNet-50' },
-        // Add more models as needed
-    ];
-
-    models.forEach(model => {
-        modelDropdown.append(new Option(model.name, model.module));
-    });
-}
-
-function loadDatasetOptions() {
-    const datasetDropdown = $('#dataset_dropdown');
-    datasetDropdown.empty();  // Clear existing options
-
-    // Example datasets; replace with your actual data
-    const datasets = [
-        { module: 'CIFAR10', name: 'CIFAR-10' },
-        { module: 'CIFAR100', name: 'CIFAR-100' },
-        // Add more datasets as needed
-    ];
-
-    datasets.forEach(dataset => {
-        datasetDropdown.append(new Option(dataset.name, dataset.module));
-    });
-}
-
+// Initialize and expose to window
+const ExperimentsInstance = new Experiments();
+window.Experiments = ExperimentsInstance;
