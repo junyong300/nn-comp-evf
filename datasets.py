@@ -38,7 +38,6 @@ def load_template():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# Save a new dataset configuration and code to the user's workspace
 @dataset.route('/save', methods=['POST'])
 @session_required
 def save_dataset():
@@ -51,28 +50,67 @@ def save_dataset():
             raise ValueError("Project name is missing.")
 
         # Define user dataset path
-        user_path = f'./workspace/{session["user"]}/{project_name}/datasets/{dataset_name}'
+        user_path = os.path.join(
+            '.', 'workspace', session["user"], project_name, 'datasets', dataset_name
+        )
         os.makedirs(user_path, exist_ok=True)
 
         # Save meta.json
-        with open(f"{user_path}/meta.json", "w") as f:
+        with open(os.path.join(user_path, "meta.json"), "w") as f:
             json.dump(data["meta"], f, indent=4)
 
         # Save config.yaml
-        with open(f"{user_path}/config.yaml", "w") as f:
+        with open(os.path.join(user_path, "config.yaml"), "w") as f:
             f.write(data["config"])
 
         # Save datasets.py
-        with open(f"{user_path}/datasets.py", "w") as f:
+        with open(os.path.join(user_path, "datasets.py"), "w") as f:
             f.write(data["dataset"])
 
         # Save collate_fn.py
-        with open(f"{user_path}/collate_fn.py", "w") as f:
+        with open(os.path.join(user_path, "collate_fn.py"), "w") as f:
             f.write(data["collate_fn"])
+        
+        # Create __init__.py to make it a Python package
+        init_content = f""" """
+        with open(f"{user_path}/__init__.py", "w") as f:
+            f.write(init_content)
+        # Update project.json
+        project_json_path = os.path.join(
+            '.', 'workspace', session["user"], project_name, 'project.json'
+        )
+        if os.path.exists(project_json_path):
+            with open(project_json_path, 'r') as f:
+                project_data = json.load(f)
+        else:
+            project_data = {"datasets": [], "models": [], "experiments": [], "optimizations": [], "runs": []}
+
+        existing_datasets = project_data.get("datasets", [])
+
+        # Add dataset_code_path to meta
+        data["meta"]["dataset_code_path"] = user_path
+
+        # Check if dataset already exists
+        dataset_exists = any(d["dataset_name"] == dataset_name for d in existing_datasets)
+        if not dataset_exists:
+            # Append new dataset
+            project_data["datasets"].append(data["meta"])
+        else:
+            # Update existing dataset
+            for idx, dataset in enumerate(existing_datasets):
+                if dataset["dataset_name"] == dataset_name:
+                    project_data["datasets"][idx] = data["meta"]
+                    break
+
+        # Save updated project.json
+        with open(project_json_path, 'w') as f:
+            json.dump(project_data, f, indent=4)
 
         return jsonify({"message": "Dataset saved successfully"})
     except Exception as e:
+        print(f"Error in save_dataset: {e}")
         return jsonify({"error": str(e)})
+
 
 # List all datasets for the current user
 @dataset.route('/list', methods=['POST'])
@@ -83,27 +121,51 @@ def list_datasets():
         if not project_name:
             raise ValueError("Project name is missing.")
 
-        user_path = f'./workspace/{session["user"]}/{project_name}/datasets'
+        project_json_path = f'./workspace/{session["user"]}/{project_name}/project.json'
         
-        # Ensure the datasets directory exists
-        if not os.path.exists(user_path):
-            os.makedirs(user_path)
-
-        # Retrieve dataset directories and load their meta information
-        datasets = []
-        for dataset_name in sorted(os.listdir(user_path)):
-            meta_path = os.path.join(user_path, dataset_name, "meta.json")
-            if os.path.isfile(meta_path):
-                with open(meta_path) as f:
-                    meta = json.load(f)
-                    datasets.append(meta)
+        # Load dataset information from project.json
+        if os.path.exists(project_json_path):
+            with open(project_json_path, 'r') as f:
+                project_data = json.load(f)
+                datasets = project_data.get("datasets", [])
+        else:
+            datasets = []
 
         # Return the dataset metadata
         return jsonify({"datasets": datasets})
     except Exception as e:
         return jsonify({"error": str(e)})
+    
+@dataset.route('/reorder', methods=['POST'])
+@session_required
+def reorder_datasets():
+    try:
+        project_name = request.json.get('project_name')
+        new_order = request.json.get('order')
+        
+        if not project_name or not new_order:
+            return jsonify({'error': 'Missing required parameters'})
 
-# Delete a specific dataset
+        project_json_path = f'./workspace/{session["user"]}/{project_name}/project.json'
+        
+        with open(project_json_path, 'r') as f:
+            project_data = json.load(f)
+        
+        # Create a map of dataset names to their full data
+        dataset_map = {d['dataset_name']: d for d in project_data['datasets']}
+        
+        # Reorder datasets according to new_order
+        project_data['datasets'] = [dataset_map[name] for name in new_order]
+        
+        with open(project_json_path, 'w') as f:
+            json.dump(project_data, f, indent=4)
+        
+        return jsonify({'error': None, 'message': 'Order updated successfully'})
+    
+    except Exception as e:
+        return jsonify({'error': f'Failed to update order: {str(e)}'})
+
+
 @dataset.route('/delete', methods=['POST'])
 @session_required
 def delete_dataset():
@@ -113,14 +175,37 @@ def delete_dataset():
         if not project_name:
             raise ValueError("Project name is missing.")
 
-        user_path = f'./workspace/{session["user"]}/{project_name}/datasets/{dataset_name}'
-        
+        user_path = os.path.join(
+            '.', 'workspace', session["user"], project_name, 'datasets', dataset_name
+        )
+
         # Remove the dataset directory
-        shutil.rmtree(user_path)
-        
+        if os.path.exists(user_path):
+            shutil.rmtree(user_path)
+        else:
+            print(f"Dataset directory does not exist: {user_path}")
+
+        # Update project.json
+        project_json_path = os.path.join(
+            '.', 'workspace', session["user"], project_name, 'project.json'
+        )
+        if os.path.exists(project_json_path):
+            with open(project_json_path, 'r') as f:
+                project_data = json.load(f)
+            # Remove the dataset from project.json
+            project_data["datasets"] = [
+                d for d in project_data.get("datasets", []) if d["dataset_name"] != dataset_name
+            ]
+            with open(project_json_path, 'w') as f:
+                json.dump(project_data, f, indent=4)
+        else:
+            print(f"project.json does not exist at: {project_json_path}")
+
         return jsonify({"message": f"Dataset '{dataset_name}' deleted successfully"})
     except Exception as e:
+        print(f"Error in delete_dataset: {e}")
         return jsonify({"error": str(e)})
+
 
 # Delete all datasets for a specific project
 @dataset.route('/delete_all', methods=['POST'])
@@ -136,6 +221,17 @@ def delete_all_datasets():
         # Remove all dataset directories for the project
         if os.path.exists(user_path):
             shutil.rmtree(user_path)
+
+        # Update project.json
+        project_json_path = f'./workspace/{session["user"]}/{project_name}/project.json'
+        if os.path.exists(project_json_path):
+            with open(project_json_path, 'r') as f:
+                project_data = json.load(f)
+
+            project_data["datasets"] = []
+
+            with open(project_json_path, 'w') as f:
+                json.dump(project_data, f, indent=4)
         
         return jsonify({"message": f"All datasets for project '{project_name}' deleted successfully"})
     except Exception as e:
