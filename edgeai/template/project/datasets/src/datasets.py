@@ -3,80 +3,68 @@ import os
 import yaml
 import json
 from torchvision import datasets, transforms
-from torch.utils.data import Dataset
+import torch
+from torch.utils.data import Dataset as TorchDataset
+import torchvision.transforms as T
+from torchvision.datasets import CIFAR100
+from tqdm import tqdm
+import urllib.request
 
-class CustomDatasetLoader(Dataset):
-    def __init__(self, meta_path, config_path):
+class Dataset(TorchDataset):
+    def __init__(self, root: str = "/Data1/CIFAR100/", train: bool = True, download: bool = True, 
+                 transform=None, target_transform=None):
         """
-        Custom Dataset Loader.
+        A simple wrapper around the torchvision CIFAR100 dataset.
 
         Args:
-            meta_path (str): Path to the meta file (meta.json).
-            config_path (str): Path to the configuration file (config.yaml).
+            root (str): Root directory where CIFAR100 data is stored or will be downloaded.
+            train (bool): If True, load the training split; otherwise load the test split.
+            download (bool): Whether to download the dataset if not found in `root`.
+            transform (callable, optional): A function/transform that takes in a PIL image
+                                            and returns a transformed version.
+            target_transform (callable, optional): A function/transform that takes in the target
+                                                   and transforms it.
         """
-        # Load meta and config
-        with open(meta_path, 'r') as f:
-            self.meta = json.load(f)
-        
-        with open(config_path, 'r') as f:
-            self.config = yaml.safe_load(f)
-        
-        # Load basic parameters from meta.json
-        self.dataset_name = self.meta.get('dataset_name', 'Unknown')
-        self.dataset_path = self.meta.get('dataset_path', './data')
-        self.task_type = self.meta.get('task_type', 'classification')
-        self.mode = self.meta.get('mode', 'train').lower()
-        
-        # Load other configurations from config.yaml
-        self.img_size = self.config.get('img_size', 32)
-        self.augmentation_config = self.config.get('augmentation', {})
-        self.normalize_mean = self.config.get('normalize', {}).get('mean', [0.5, 0.5, 0.5])
-        self.normalize_std = self.config.get('normalize', {}).get('std', [0.5, 0.5, 0.5])
+        # Default transforms if none provided
+        if transform is None:
+            transform = T.Compose([
+                T.Resize((224, 224)),
+                T.ToTensor(),
+                T.Normalize((0.5071, 0.4865, 0.4409), (0.2673, 0.2564, 0.2762))
+            ])
 
-        # Set up transformations based on mode
-        if self.mode == 'train':
-            self.transform = self.get_train_transform()
-        else:
-            self.transform = self.get_test_transform()
+        # Override default download progress with custom one
+        def custom_progress_hook(t):
+            def inner(b=1, bsize=1, tsize=None):
+                if tsize is not None:
+                    t.total = tsize
+                t.update(b * bsize)
+            return inner
 
-        # Load the dataset based on task type and dataset name
-        self.dataset = self.load_dataset()
+        # Override the urllib.request.urlretrieve to use our custom progress bar
+        original_urlretrieve = urllib.request.urlretrieve
+        def custom_urlretrieve(url, filename, reporthook=None, data=None):
+            with tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1,
+                     desc='Downloading CIFAR100', position=0, leave=False) as t:
+                return original_urlretrieve(url, filename,
+                                         reporthook=custom_progress_hook(t),
+                                         data=data)
 
-    def get_train_transform(self):
-        """Define training transformations."""
-        train_transform = [
-            transforms.Resize((self.img_size, self.img_size)),
-            transforms.RandomCrop(self.img_size, padding=4) if self.augmentation_config.get('random_crop', False) else None,
-            transforms.RandomHorizontalFlip() if self.augmentation_config.get('horizontal_flip', False) else None,
-            transforms.ToTensor(),
-            transforms.Normalize(mean=self.normalize_mean, std=self.normalize_std)
-        ]
-        return transforms.Compose([t for t in train_transform if t])
+        # Patch the urlretrieve for this download
+        urllib.request.urlretrieve = custom_urlretrieve
 
-    def get_test_transform(self):
-        """Define test/validation transformations."""
-        return transforms.Compose([
-            transforms.Resize((self.img_size, self.img_size)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=self.normalize_mean, std=self.normalize_std)
-        ])
+        try:
+            self.dataset = CIFAR100(root=root,
+                                  train=train, 
+                                  download=download,
+                                  transform=transform, 
+                                  target_transform=target_transform)
+        finally:
+            # Restore original urlretrieve
+            urllib.request.urlretrieve = original_urlretrieve
 
-    def load_dataset(self):
-        """Load dataset based on task type and dataset name."""
-        if self.task_type == 'classification' and self.dataset_name.lower() == 'cifar100':
-            return datasets.CIFAR100(root=self.dataset_path, train=(self.mode == 'train'), 
-                                     download=True, transform=self.transform)
-        else:
-            raise ValueError(f"Unsupported dataset or task type: {self.dataset_name}, {self.task_type}")
+    def __getitem__(self, index: int):
+        return self.dataset[index]
 
     def __len__(self):
         return len(self.dataset)
-
-    def __getitem__(self, idx):
-        return self.dataset[idx]
-
-# Example usage for dataset loader
-if __name__ == "__main__":
-    dataset_loader = CustomDatasetLoader(meta_path='./meta.json', config_path='./config.yaml')
-    print("Dataset loaded:", dataset_loader.dataset_name)
-    print("Dataset length:", len(dataset_loader))

@@ -1,7 +1,3 @@
-# Configuration for Vision Transformer model
-model_name: "vit_b_16"
-description: "Vision Transformer (ViT-B/16) for image classification"
-
 # Model parameters 
 model_params:
   num_classes: 100
@@ -10,59 +6,3 @@ model_params:
   fine_tune: true
   input_size: [224, 224]
   patch_size: 16
-
-# Training parameters
-training:
-  batch_size: 64
-  learning_rate: 0.001
-  weight_decay: 0.0001
-  epochs: 100
-  optimizer: "AdamW"
-  scheduler: "cosine"
-  warmup_epochs: 5
-  label_smoothing: 0.1
-
-# Data augmentation
-augmentation:
-  random_resized_crop:
-    size: 224
-    scale: [0.08, 1.0]
-  random_horizontal_flip: 0.5
-  color_jitter:
-    brightness: 0.4
-    contrast: 0.4
-    saturation: 0.4
-    hue: 0.1
-  random_augment:
-    num_ops: 2
-    magnitude: 9
-  mix_up:
-    alpha: 0.8
-    prob: 0.5
-
-# Normalization
-normalize:
-  mean: [0.485, 0.456, 0.406]
-  std: [0.229, 0.224, 0.225]
-
-# Monitoring
-monitoring:
-  save_frequency: 5
-  eval_frequency: 1
-  grad_clip: 1.0
-  early_stopping:
-    patience: 10
-    min_delta: 0.001
-
-# Hardware
-hardware:
-  precision: "float32"
-  num_workers: 4
-  pin_memory: true
-  cudnn_benchmark: true
-
-# Logging
-logging:
-  log_frequency: 100
-  save_checkpoints: true
-  keep_last_n: 3

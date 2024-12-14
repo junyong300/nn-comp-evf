@@ -1,5 +1,0 @@
-{
-	"num_gpus": 1,
-	"model_name": "target",
-	"mode": "eval"
-}
