@@ -1,365 +1,229 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Edge Vision Framework</title>
-    
-    <!-- CSS -->
-    <link href="/static/dist/css/tabler.min.css" rel="stylesheet" />
-    <link href="/static/dist/css/tabler-vendors.min.css" rel="stylesheet" />
-    
-    <!-- Scripts -->
-    <script src="/static/dist/js/tabler.min.js" defer></script>
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/jquery.cookie.min.js"></script>
-    <script src="/static/js/notify.js"></script>
-    <script src="/static/src/datasets.js"></script>
-    <script src="/static/src/models.js"></script>
-    <script src="/static/src/base.js"></script> <!-- Include base.js before experiments.js -->
-    <script src="/static/src/experiments.js"></script>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Edge Vision Framework</title>
 
-<body class="layout-fluid">
-    <div class="page">
-        <!-- Sidebar -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
-            <div class="container-fluid">
-                <!-- Navbar Toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <!-- CSS -->
+        <link href="/static/dist/css/tabler.min.css" rel="stylesheet" />
+        <link href="/static/dist/css/tabler-vendors.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/tabler-icons@1.39.1/iconfont/tabler-icons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@tabler/icons@1.39.1/iconfont/tabler-icons.min.css" rel="stylesheet">
+        <script src="/static/ace/src-min/ace.js" type="text/javascript"></script>
 
-                <!-- Brand Logo -->
-                <h1 class="navbar-brand navbar-brand-autodark justify-content-start">
-                    <img src="/static/images/logo.png" alt="Edge Vision Framework" class="navbar-brand-image">
-                    <span class="p-2 text-white tracking-wide">Edge Vision<br>Framework</span>
-                </h1>
 
-                <!-- Sidebar Menu -->
-                <div class="collapse navbar-collapse" id="sidebar-menu">
-                    <!-- Project Selection -->
-                    <div class="px-3 my-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">Project</span>
-                            <div class="btn-list">
-                                <button class="btn btn-sm btn-success" title="Create project" data-bs-toggle="modal" 
-                                        data-bs-target="#id_modal_create_project">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <line x1="12" y1="5" x2="12" y2="19"/>
-                                        <line x1="5" y1="12" x2="19" y2="12"/>
-                                    </svg>
-                                </button>
-                                <button class="btn btn-sm btn-danger" title="Delete project" data-bs-toggle="modal" 
-                                        data-bs-target="#id_modal_delete_project">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <line x1="4" y1="7" x2="20" y2="7"/>
-                                        <line x1="10" y1="11" x2="10" y2="17"/>
-                                        <line x1="14" y1="11" x2="14" y2="17"/>
-                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
-                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <select id="id_project" class="form-select" aria-label="Select Project">
-                            <!-- Project options populated by JavaScript -->
-                        </select>
-                    </div>
+        <!-- Core Scripts -->
+        <script src="/static/dist/js/tabler.min.js"></script>
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-                    <!-- Navigation Menu -->
-                    <ul class="navbar-nav pt-lg-3">
-                        <!-- Dashboard -->
-                        <li class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
-                            <a class="nav-link" href="/dashboard" id="sidebar_dashboard">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <rect x="4" y="4" width="6" height="8" rx="1"/>
-                                        <rect x="4" y="16" width="6" height="4" rx="1"/>
-                                        <rect x="14" y="12" width="6" height="8" rx="1"/>
-                                        <rect x="14" y="4" width="6" height="4" rx="1"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Dashboard</span>
-                            </a>
-                        </li>
+        <!-- Page Initialization -->
+        <script>
+            $(document).ready(function () {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: "toast-top-right",
+                    timeOut: "5000",
+                    extendedTimeOut: "1000",
+                    showMethod: "fadeIn",
+                    hideMethod: "fadeOut"
+                };
 
-                        <!-- Datasets -->
-                        <li class="nav-item {% if request.endpoint == 'datasets' %}active{% endif %}">
-                            <a class="nav-link" href="/datasets" id="sidebar_datasets">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <ellipse cx="12" cy="6" rx="8" ry="3"/>
-                                        <path d="M4 6v6a8 3 0 0 0 16 0v-6"/>
-                                        <path d="M4 12v6a8 3 0 0 0 16 0v-6"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Datasets</span>
-                            </a>
-                        </li>
+                // Highlight active menu item based on URL
+                const currentPath = window.location.pathname;
+                $(".navbar-nav .nav-link").each(function () {
+                    if (this.href.includes(currentPath)) {
+                        $(this).addClass("active");
+                    } else {
+                        $(this).removeClass("active");
+                    }
+                });
+            });
+        </script>
+    </head>
 
-                        <!-- Models -->
-                        <li class="nav-item {% if request.endpoint == 'models' %}active{% endif %}">
-                            <a class="nav-link" href="/models" id="sidebar_models">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/>
-                                        <rect x="9" y="3" width="6" height="4" rx="2"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Models</span>
-                            </a>
-                        </li>
-
-                        <!-- Experiments -->
-                        <li class="nav-item {% if request.endpoint == 'experiments' %}active{% endif %}">
-                            <a class="nav-link" href="/experiments" id="sidebar_experiments">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 20h16"/>
-                                        <path d="M9 20v-4"/>
-                                        <path d="M15 20v-4"/>
-                                        <path d="M5 4h14a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Experiments</span>
-                            </a>
-                        </li>
-
-                        <!-- Optimizations -->
-                        <li class="nav-item {% if request.endpoint == 'optimizations' %}active{% endif %}">
-                            <a class="nav-link" href="/optimizations" id="sidebar_optimizations">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
-                                        <path d="M12 17l0 .01"/>
-                                        <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Optimizations</span>
-                            </a>
-                        </li>
-
-                        <!-- Deployment -->
-                        <li class="nav-item {% if request.endpoint == 'deployment' %}active{% endif %}">
-                            <a class="nav-link" href="/deployment" id="sidebar_deployment">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/>
-                                        <path d="M7 9l5 -5l5 5"/>
-                                        <path d="M12 4l0 12"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Deployment</span>
-                            </a>
-                        </li>
-
-                        <!-- Monitoring -->
-                        <li class="nav-item {% if request.endpoint == 'monitoring' %}active{% endif %}">
-                            <a class="nav-link" href="/monitoring" id="sidebar_monitoring">
-                                <span class="nav-link-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 12h4l3 8l4 -16l3 8h4"/>
-                                    </svg>
-                                </span>
-                                <span class="nav-link-title">Monitoring</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <!-- User Menu -->
-                    <div class="mt-auto">
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
-                                <span class="avatar avatar-sm">{{ session['user']|first|upper }}</span>
-                                <div class="d-none d-xl-block ps-2">
-                                    <div id="id_user">{{ session['user'] }}</div>
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-logout">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon dropdown-item-icon" width="24" 
-                                         height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
-                                         fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
-                                        <path d="M7 12h14l-3 -3m0 6l3 -3"/>
-                                    </svg>
-                                    Logout
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Page Content -->
-        <div class="page-wrapper">
-            {% block content %}{% endblock %}
-        </div>
-
-        <!-- Modals -->
-        <!-- Create Project Modal -->
-        <div class="modal modal-blur fade" id="id_modal_create_project" tabindex="-1">
-            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Create Project</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label required">Project Name</label>
-                            <input id="id_project_name" type="text" class="form-control" 
-                                   placeholder="Enter project name" autocomplete="off">
-                            <small class="form-hint">Only letters, numbers, hyphens and underscores allowed</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-primary" id="id_create_project_ok">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                            Create Project
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Delete Project Modal -->
-        <div class="modal modal-blur fade" id="id_modal_delete_project" tabindex="-1">
-            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="modal-title">Delete Project</div>
-                        <div class="text-muted">Are you sure you want to delete this project? 
-                            All associated data will be permanently removed. This action cannot be undone.</div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-danger" id="id_delete_project_ok">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <line x1="4" y1="7" x2="20" y2="7"/>
-                                <line x1="10" y1="11" x2="10" y2="17"/>
-                                <line x1="14" y1="11" x2="14" y2="17"/>
-                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
-                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
-                            </svg>
-                            Delete Project
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Logout Modal -->
-        <div class="modal modal-blur fade" id="modal-logout" tabindex="-1">
-            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="modal-title">Logout</div>
-                        <div class="text-muted">Are you sure you want to logout?</div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-danger" id="id_logout_ok">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
-                                <path d="M7 12h14l-3 -3m0 6l3 -3"/>
-                            </svg>
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loading-indicator" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- Notification Container -->
-        <div id="notification-container" class="position-fixed bottom-0 end-0 p-3" 
-             style="z-index: 1050"></div>
-    </div>
-
-    <!-- Error Boundary -->
-    <div id="error-boundary" class="d-none">
-        <div class="container-tight py-4">
-            <div class="empty">
-                <div class="empty-header">500</div>
-                <p class="empty-title">Oops... Something went wrong</p>
-                <p class="empty-subtitle text-muted">
-                    We are sorry but our server encountered an internal error
-                </p>
-                <div class="empty-action">
-                    <button onclick="window.location.reload()" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/>
-                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>
-                        </svg>
-                        Refresh Page
+    <body class="layout-fluid">
+        <div class="page">
+            <!-- Sidebar -->
+            <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                        <span class="navbar-toggler-icon"></span>
                     </button>
+
+                    <h1 class="navbar-brand navbar-brand-autodark">
+                        <img src="/static/images/logo.png" alt="Edge Vision Framework" class="navbar-brand-image">
+                        <span class="p-2 text-white">Edge Vision<br>Framework</span>
+                    </h1>
+
+                    <div class="collapse navbar-collapse" id="sidebar-menu">
+                        <!-- Replace the existing project selection section with this: -->
+                        <div class="px-3 my-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+                                        <path d="M3 7l9 6l9 -6" />
+                                    </svg>
+                                    <span class="text-muted">Current Project</span>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-success" title="Create project" data-bs-toggle="modal" data-bs-target="#id_modal_create_project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M12 5l0 14" />
+                                            <path d="M5 12l14 0" />
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" title="Delete project" data-bs-toggle="modal" data-bs-target="#id_modal_delete_project" id="btn_delete_project">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M4 7h16" />
+                                            <path d="M10 11l0 6" />
+                                            <path d="M14 11l0 6" />
+                                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <select id="id_project" class="form-select text-dark" aria-label="Select Project" style="color: #000000; background-color: #ffffff;">
+                                <option value="">Select Project</option>
+                            </select>
+                        </div>
+
+                        <ul class="navbar-nav pt-lg-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/dashboard">
+                                    <i class="ti ti-dashboard"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/datasets">
+                                    <i class="ti ti-database"></i>
+                                    Datasets
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/models">
+                                    <i class="ti ti-box"></i>
+                                    Models
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/optimizations">
+                                    <i class="ti ti-rocket"></i>
+                                    Optimizations
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/runs">
+                                    <i class="ti ti-list"></i>
+                                    Runs
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/monitor">
+                                    <i class="ti ti-eye"></i>
+                                    Monitoring
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/deployment">
+                                    <i class="ti ti-cloud-upload"></i>
+                                    Deployment
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto">
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link" data-bs-toggle="dropdown">
+                                    <span class="avatar avatar-sm">{{ session['user']|first|upper }}</span>
+                                    <span class="ps-2">{{ session['user'] }}</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-logout">
+                                        <i class="ti ti-logout"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Page Content -->
+            <div class="page-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+
+            <!-- Modals -->
+            <div class="modal modal-blur fade" id="id_modal_create_project" tabindex="-1">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5>Create Project</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="id_project_name">Project Name</label>
+                            <input id="id_project_name" type="text" class="form-control" placeholder="Enter project name">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="id_create_project_ok">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal modal-blur fade" id="id_modal_delete_project" tabindex="-1">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete this project?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="id_delete_project_ok">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal modal-blur fade" id="modal-logout" tabindex="-1">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p>Are you sure you want to logout?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-danger" id="id_logout_ok">Logout</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Additional Scripts -->
-    {% block scripts %}{% endblock %}
-</body>
-
+        {% block scripts %}{% endblock %}
+        <!-- Add this right before </body> -->
+    <script src="/static/src/base.js"></script>
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 's' || e.key === 'S') && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                e.preventDefault();
+                return false;
+            }
+        }, {passive: false});
+    </script>
+    </body>
 </html>
