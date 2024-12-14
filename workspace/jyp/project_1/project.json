@@ -1,0 +1,49 @@
+{
+    "project_name": "project_1",
+    "user_name": "jyp",
+    "datasets": [
+        {
+            "dataset_name": "CIFAR100",
+            "dataset_path": "/Data1/CIFAR100/",
+            "dataset_shape": "224, 224, 3",
+            "dataset_mode": "train",
+            "dataset_code_path": "./workspace/jyp/project_1/datasets/CIFAR100"
+        },
+        {
+            "dataset_name": "CIFAR10",
+            "dataset_path": "/Data/Cifar10",
+            "dataset_shape": "224, 224, 3",
+            "dataset_mode": "train",
+            "dataset_code_path": "./workspace/jyp/project_1/datasets/CIFAR10"
+        }
+    ],
+    "models": [
+        {
+            "model_name": "EfficientNet_B0",
+            "model_type": "Vision",
+            "model_architecture": "EfficientNet",
+            "model_save_path": "./workspace/jyp/project_1/models/EfficientNet_B0"
+        }
+    ],
+    "runs": [
+        {
+            "run_name": "r1",
+            "created_date": "2024-12-14T00:21:36Z",
+            "model_name": "EfficientNet_B0",
+            "dataset_name": "CIFAR100",
+            "optimization_name": "quantize_16bit",
+            "status": "Stopped",
+            "gpu_ids": [],
+            "pid": null,
+            "num_gpus": 4
+        }
+    ],
+    "optimizations": [
+        {
+            "original_model_name": "EfficientNet_B0",
+            "optimize_method_name": "quantize_16bit",
+            "optimization_code_path": "./workspace/jyp/project_1/optimizations/quantize_16bit",
+            "misc": ""
+        }
+    ]
+}

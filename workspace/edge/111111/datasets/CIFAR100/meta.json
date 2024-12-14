@@ -1,0 +1,6 @@
+{
+    "dataset_name": "CIFAR100",
+    "dataset_path": "/data/jyp/cifar100/",
+    "task_type": "Classification",
+    "mode": "train"
+}

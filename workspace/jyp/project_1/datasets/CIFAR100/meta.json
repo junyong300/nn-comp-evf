@@ -1,0 +1,6 @@
+{
+    "dataset_name": "CIFAR100",
+    "dataset_path": "/Data1/CIFAR100/",
+    "dataset_shape": "224, 224, 3",
+    "dataset_mode": "train"
+}

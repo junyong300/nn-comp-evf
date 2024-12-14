@@ -1,0 +1,20 @@
+dataset:
+  name: CIFAR100
+  params: {}
+misc:
+  checkpoint_dir: ./checkpoints
+  log_dir: ./logs
+  seed: 42
+model:
+  name: EfficientNet_B0
+  params: {}
+optimization:
+  optimizer:
+    name: Adam
+    params:
+      lr: 0.001
+training:
+  batch_size: 32
+  epochs: 10
+  loss_function: CrossEntropyLoss
+  num_gpus: 4

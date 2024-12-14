@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="container-xl">
+        <!-- Page title -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <div class="page-pretitle">Datasets</div>
+                    <h2 class="page-title">Manage Datasets</h2>
+                </div>
+                <div class="col-12 col-md-auto ms-auto">
+                    <button id="id_create_dataset" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newDatasetModal">
+                    + New Dataset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Dataset Path</th>
+                            <th>Task Type</th>
+                            <th>Mode</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="id_table_body">
+                        <!-- Dynamic dataset data rows go here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Dataset Modal -->
+    <div id="newDatasetModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Dataset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="dataset_name">Name</label>
+                        <input type="text" class="form-control" id="dataset_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="dataset_path">Path</label>
+                        <input type="text" class="form-control" id="dataset_path">
+                    </div>
+                    <div class="mb-3">
+                        <label for="task_type">Task Type</label>
+                        <input type="text" class="form-control" id="task_type">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mode">Mode</label>
+                        <select class="form-control" id="mode">
+                            <option value="train">Train</option>
+                            <option value="validation">Validation</option>
+                            <option value="test">Test</option>
+                        </select>
+                    </div>
+                    <div class="editor-container">
+                        <div id="editor_config" class="editor mb-3"></div>
+                        <div id="editor_dataset" class="editor mb-3"></div>
+                        <div id="editor_collate_fn" class="editor mb-3"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="id_save_dataset">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- 
+<script src="/static/ace/src-min/ace.js"></script>
+<script src="/static/src/datasets.js"></script> -->
+{% endblock %}

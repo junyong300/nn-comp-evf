@@ -1,0 +1,6 @@
+{
+    "original_model_name": "EfficientNet_B0",
+    "optimize_method_name": "quantize_16bit",
+    "optimization_code_path": "./workspace/jyp/project_1/optimizations/quantize_16bit",
+    "misc": ""
+}

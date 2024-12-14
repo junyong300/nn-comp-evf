@@ -1,0 +1,5 @@
+{
+    "model_name": "EfficientNet_B0",
+    "model_type": "Vision",
+    "model_architecture": "EfficientNet"
+}
