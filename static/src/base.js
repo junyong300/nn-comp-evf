@@ -1,387 +1,374 @@
-// Global state management
-var App = (function() {
-    var AppState = {
+// Base Application Module
+const App = (function() {
+    // State Management
+    const AppState = {
         lastSelectedOption: "dashboard",
-        backup_ok: null,
         currentProject: null,
-        currentRun: {
-            step: 1,
-            config: {
-                basic: {
-                    name: '',
-                    type: 'train',
-                    description: '',
-                    tags: []
-                },
-                training: {
-                    batchSize: 32,
-                    epochs: 100,
-                    learningRate: 0.001,
-                    optimizer: 'adam',
-                    weightDecay: 0.01,
-                    scheduler: 'cosine'
-                },
-                selection: {
-                    modelId: '',
-                    datasetId: '',
-                    modelConfig: {},
-                    datasetConfig: {}
-                }
-            }
-        },
         projects: [],
         models: [],
         datasets: []
     };
-    
-    function initializeEventHandlers() {
-        // Modal handlers
-        $('#id_create_project_ok').click(handleCreateProject);
-        $('#id_delete_project_ok').click(handleDeleteProject);
-        $('#id_logout_ok').click(handleLogout);
 
-        // Project change handler
-        $('#id_project').on('change', function() {
-            const selectedProject = $(this).val();
-            if (selectedProject) {
-                AppState.currentProject = selectedProject;
-                sessionStorage.setItem("project_name", selectedProject);
-                handleProjectChange(selectedProject);
+    // UI Constants
+    const UI = {
+        selectors: {
+            projectSelect: '#id_project',
+            createProjectBtn: '#id_create_project_ok',
+            deleteProjectBtn: '#id_delete_project_ok',
+            logoutBtn: '#id_logout_ok',
+            projectNameInput: '#id_project_name',
+            createProjectModal: '#id_modal_create_project',
+            deleteProjectModal: '#id_modal_delete_project',
+            sidebarItems: {
+                dashboard: '#sidebar_dashboard',
+                datasets: '#sidebar_datasets',
+                models: '#sidebar_models',
+                experiments: '#sidebar_experiments',
+                optimizations: '#sidebar_optimizations',
+                deployment: '#sidebar_deployment',
+                monitoring: '#sidebar_monitoring'
             }
-        });
-
-        // Sidebar navigation handlers
-        $('#sidebar_dashboard').click(() => handleSidebarClick('dashboard'));
-        $('#sidebar_datasets').click(() => handleSidebarClick('datasets'));
-        $('#sidebar_models').click(() => handleSidebarClick('models'));
-        $('#sidebar_experiments').click(() => handleSidebarClick('experiments'));
-        $('#sidebar_optimizations').click(() => handleSidebarClick('optimizations'));
-        $('#sidebar_deployment').click(() => handleSidebarClick('deployment'));
-        $('#sidebar_monitoring').click(() => handleSidebarClick('monitoring'));
-    }
-    
-    $(document).ready(function() {
-        initializeEventHandlers();
-        loadProjects();
-    });
-
-
-    function handleCreateProject() {
-        const projectName = $("#id_project_name").val();
-        if (!validateProjectName(projectName)) {
-            showNotification("Project name is not valid! (only letters, numbers, - and _ are allowed)", "error");
-            return;
-        }
-
-        createProject(projectName);
-    }
-    
-    async function createProject(projectName) {
-        try {
-            const response = await fetch("/project/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ project_name: projectName })
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                AppState.currentProject = projectName;
-                sessionStorage.setItem("project_name", projectName);
-                showNotification("Project created successfully!", "success");
-                $("#id_modal_create_project").modal('hide');
-                await loadProjects();
-            } else {
-                showNotification(data.err, "error");
+        },
+        messages: {
+            errors: {
+                projectRequired: 'Project name is required',
+                invalidProjectName: 'Project name can only contain letters, numbers, hyphens, and underscores',
+                noProjectSelected: 'No project selected',
+                loadFailed: 'Failed to load projects',
+                createFailed: 'Failed to create project',
+                deleteFailed: 'Failed to delete project',
+                logoutFailed: 'Failed to logout'
+            },
+            success: {
+                projectCreated: 'Project created successfully',
+                projectDeleted: 'Project deleted successfully',
+                logoutSuccess: 'Logged out successfully'
             }
-        } catch (error) {
-            console.error("Create project error:", error);
-            showNotification("Failed to create project", "error");
         }
-    }
-
-    function validateProjectName(name) {
-        return /^[a-zA-Z0-9_-]+$/.test(name);
-    }
-
-    async function handleDeleteProject() {
-        const projectName = $("#id_project").val();
-        try {
-            const response = await fetch("/project/delete", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ project_name: projectName })
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                sessionStorage.removeItem("project_name");
-                showNotification("Project deleted successfully!", "success");
-                await loadProjects();
-                clearProjectRelatedItems();
-            } else {
-                showNotification(data.err, "error");
-            }
-        } catch (error) {
-            console.error("Delete project error:", error);
-            showNotification("Failed to delete project", "error");
-            await loadProjects();
-        }
-    }
-
-    async function loadProjects() {
-        try {
-            const response = await fetch("/project/list", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                updateProjectList(data.res);
-            } else {
-                showNotification(data.err, "error");
-            }
-        } catch (error) {
-            console.error("Load project list error:", error);
-            showNotification("Failed to load projects", "error");
-        }
-    }
-
-    function updateProjectList(data) {
-        const $projectSelect = $('#id_project');
-        $projectSelect.empty();
-    
-        // Get current project from storage or state
-        let currentProject = sessionStorage.getItem("project_name") || AppState.currentProject;
-    
-        // Add a placeholder if no projects exist
-        if (data.projects.length === 0) {
-            $projectSelect.append(new Option('No projects available', '', true, true));
-        } else {
-            // If no current project but we have projects, use the first one
-            if ((!currentProject || currentProject === "undefined")) {
-                currentProject = data.projects[0];
-                AppState.currentProject = currentProject;
-                sessionStorage.setItem("project_name", currentProject);
-            }
-    
-            // Populate dropdown
-            data.projects.forEach(project => {
-                const isSelected = project === currentProject;
-                const option = new Option(project, project, isSelected, isSelected);
-                $projectSelect.append(option);
-            });
-        }
-    
-        // Ensure the dropdown shows the current selection
-        $projectSelect.val(currentProject);
-        
-        // Show/hide buttons based on whether there are projects
-        const hasProjects = data.projects.length > 0;
-        $('#id_modal_delete_project').closest('button').toggle(hasProjects);
-    
-        // Show create project dialog if no projects exist
-        if (!hasProjects) {
-            $("#id_modal_create_project").modal('show');
-        }
-    
-        // Log for debugging
-        console.log('Project list updated:', {
-            projects: data.projects,
-            currentProject: currentProject,
-            selectedValue: $projectSelect.val()
-        });
-    }
-
-    function updateUIForProject(projectName) {
-        // Update any UI elements that depend on the current project
-        // This will be called after project changes
-        if (AppState.lastSelectedOption) {
-            loadContentBasedOnCurrentView(AppState.lastSelectedOption);
-        }
-    
-        // Update page title or other elements if needed
-        document.title = `${projectName} - Edge Vision Framework`;
-    }
-
-    async function handleProjectChange(projectName) {
-        // Update state and storage
-        AppState.currentProject = projectName;
-        sessionStorage.setItem("project_name", projectName);
-        console.log('Project changed to:', projectName);
-
-        // Notify other components about project change
-        const event = new CustomEvent('projectChanged', { 
-            detail: { projectName: projectName } 
-        });
-        document.dispatchEvent(event);
-        updateUIForProject(projectName);
-    }
-
-    function handleSidebarClick(section) {
-        AppState.lastSelectedOption = section;
-        loadContentBasedOnCurrentView();
-    }
-
-    async function loadContentBasedOnCurrentView(view) {
-        const projectName = AppState.currentProject;
-        if (!projectName) return;
-
-        // Clear existing content
-        clearProjectRelatedItems();
-
-        // Load appropriate content based on view
-        switch(view) {
-            case 'datasets':
-                await loadDatasets(projectName);
-                break;
-            case 'models':
-                await loadModels(projectName);
-                break;
-            case 'experiments':
-                await loadExperiments(projectName);
-                break;
-            // ... other cases
-        }
-    }
-
-    function showNotification(message, type = 'info') {
-        $.notify(message, {
-            className: type,
-            position: 'bottom right'
-        });
-    }
-
-    function clearProjectRelatedItems() {
-        $('#id_table_body').html("");
-        // Clear any other project-specific content
-    }
-
-    async function handleLogout() {
-        try {
-            const response = await fetch("/auth/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                showNotification("Logout successful!", "success");
-            } else {
-                showNotification(data.err, "error");
-            }
-
-            sessionStorage.removeItem("project_name");
-            window.location.href = "/";
-        } catch (error) {
-            console.error("Logout error:", error);
-            showNotification("Failed to logout", "error");
-            sessionStorage.removeItem("project_name");
-            window.location.href = "/";
-        }
-    }
-
-    async function handleNextStepInCreateExperiment() {
-        const experimentName = $("#id_experiment_name").val();
-        if (!validateExperimentName(experimentName)) {
-            showNotification("Experiment name is not valid! (only letters, numbers, - and _ are allowed)", "error");
-            return;
-        }
-
-        createExperiment(experimentName);
-    }
-    async function createExperiment(experimentName) {
-        try {
-            const response = await fetch("/experiment/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ experiment_name: experimentName })
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                showNotification("Experiment created successfully!", "success");
-            } else {
-                showNotification(data.err, "error");
-            }
-
-            // Load the next step in the create experiment process
-            loadNextStepInCreateExperiment();
-        } catch (error) {
-            console.error("Create experiment error:", error);
-            showNotification("Failed to create experiment", "error");
-            loadNextStepInCreateExperiment();
-        }
-    }
-
-    async function loadNextStepInCreateExperiment() {
-        try {
-            const response = await fetch("/experiment/list", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-
-            const data = await response.json();
-            if (!data.err) {
-                updateCreateExperimentForm(data.res);
-            } else {
-                showNotification(data.err, "error");
-            }
-        } catch (error) {
-            console.error("Load next step in create experiment error:", error);
-            showNotification("Failed to load next step", "error");
-        }
-    }
-
-    function updateCreateExperimentForm(data) {
-        // Update the form based on the data from the server
-        $("#id_experiment_name").val(data.experiment_name);
-        $("#id_project_id").val(data.project_id);
-
-        // Show the experiment creation dialog
-        $("#id_modal_create_experiment").modal('show');
-    }
-
-    // Event listeners for project changes
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initial load
-        loadProjects();
-
-        // Listen for storage changes (for multi-tab support)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'project_name') {
-                const newProject = e.newValue;
-                if (newProject !== AppState.currentProject) {
-                    AppState.currentProject = newProject;
-                    handleProjectChange(newProject);
-                }
-            }
-        });
-    });
-
-    return {
-        AppState: AppState,
-        showNotification: showNotification,
-        loadProjects: loadProjects,
-        getCurrent: () => AppState.currentProject,
-        handleNextStepInCreateExperiment: handleNextStepInCreateExperiment,
-        projects: projects,
-        models: models,
-        datasets: datasets
     };
-    })();
 
-    window.App = App;
+    // Project Management
+    const ProjectManager = {
+        async loadProjects() {
+            try {
+                const response = await fetch('/project/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                if (!data.err) {
+                    AppState.projects = data.res.projects || [];
+                    UIManager.updateProjectList(AppState.projects);
+                    return true;
+                }
+                NotificationManager.error(data.err);
+                return false;
+            } catch (error) {
+                console.error('Load projects error:', error);
+                NotificationManager.error(UI.messages.errors.loadFailed);
+                return false;
+            }
+        },
+
+        async createProject(projectName) {
+            console.log('Creating project:', projectName);
+            try {
+                // Get button and store original text first
+                const $createBtn = $(UI.selectors.createProjectBtn);
+                const originalText = $createBtn.text() || 'Create';  // Store original text with fallback
+                
+                // Show loading state
+                $createBtn.prop('disabled', true).text('Creating...');
+        
+                // Validate
+                if (!projectName) {
+                    NotificationManager.error(UI.messages.errors.projectRequired);
+                    $createBtn.prop('disabled', false).text(originalText);
+                    return false;
+                }
+                
+                if (!this.validateProjectName(projectName)) {
+                    NotificationManager.error(UI.messages.errors.invalidProjectName);
+                    $createBtn.prop('disabled', false).text(originalText);
+                    return false;
+                }
+        
+                const response = await fetch("/project/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project_name: projectName })
+                });
+        
+                const data = await response.json();
+                console.log('Create project response:', data);
+                
+                if (!data.err) {
+                    AppState.currentProject = projectName;
+                    SessionManager.setProject(projectName);
+                    NotificationManager.success(UI.messages.success.projectCreated);
+                    
+                    // Reset form and close modal
+                    $(UI.selectors.projectNameInput).val('');
+                    const modalElement = document.querySelector(UI.selectors.createProjectModal);
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        if (modal) modal.hide();
+                    }
+                    
+                    await this.loadProjects();
+                    return true;
+                } else {
+                    NotificationManager.error(data.err);
+                    return false;
+                }
+            } catch (error) {
+                console.error("Create project error:", error);
+                NotificationManager.error(UI.messages.errors.createFailed);
+                return false;
+            } finally {
+                // Reset button state using jQuery find to ensure we get the right button
+                const $btn = $(UI.selectors.createProjectBtn);
+                $btn.prop('disabled', false).text($btn.data('originalText') || 'Create');
+            }
+        },
+
+        async deleteProject(projectName) {
+            try {
+                if (!projectName) {
+                    NotificationManager.error(UI.messages.errors.noProjectSelected);
+                    return false;
+                }
+
+                const response = await fetch("/project/delete", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ project_name: projectName })
+                });
+
+                const data = await response.json();
+                if (!data.err) {
+                    NotificationManager.success(UI.messages.success.projectDeleted);
+                    AppState.currentProject = null;
+                    SessionManager.clearProject();
+                    $(UI.selectors.deleteProjectModal).modal('hide');
+                    await this.loadProjects();
+                    return true;
+                }
+                NotificationManager.error(data.err);
+                return false;
+            } catch (error) {
+                console.error("Delete project error:", error);
+                NotificationManager.error(UI.messages.errors.deleteFailed);
+                return false;
+            }
+        },
+
+        validateProjectName(name) {
+            return /^[a-zA-Z0-9_-]+$/.test(name);
+        }
+    };
+
+    // Session Management
+    const SessionManager = {
+        setProject(projectName) {
+            sessionStorage.setItem("project_name", projectName);
+        },
+
+        getProject() {
+            return sessionStorage.getItem("project_name");
+        },
+
+        clearProject() {
+            sessionStorage.removeItem("project_name");
+        },
+
+        async verifySessionState() {
+            try {
+                const response = await fetch('/project/current_project', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                if (!data.err && data.res.project) {
+                    AppState.currentProject = data.res.project;
+                    this.setProject(data.res.project);
+                } else {
+                    AppState.currentProject = null;
+                    this.clearProject();
+                }
+            } catch (error) {
+                console.error('Session verification error:', error);
+                AppState.currentProject = null;
+                this.clearProject();
+            }
+        }
+    };
+
+    // UI Management
+    const UIManager = {
+        updateProjectList(projects) {
+            const $select = $(UI.selectors.projectSelect);
+            const currentProject = AppState.currentProject || SessionManager.getProject();
+            
+            // Clear and initialize select
+            $select.empty();
+            $select.append($('<option>', {
+                value: '',
+                text: 'Select Project',
+                selected: !currentProject
+            }));
+    
+            // Add project options
+            if (Array.isArray(projects) && projects.length > 0) {
+                projects.forEach(project => {
+                    $select.append($('<option>', {
+                        value: project,
+                        text: project,
+                        selected: project === currentProject
+                    }));
+                });
+    
+                // Set first project if none selected
+                if (!currentProject) {
+                    AppState.currentProject = projects[0];
+                    SessionManager.setProject(projects[0]);
+                    $select.val(projects[0]);
+                } else {
+                    $select.val(currentProject);
+                }
+    
+                // Enable/disable delete button
+                $('#btn_delete_project').prop('disabled', !currentProject);
+            }
+        },
+    
+        initializeEventHandlers() {
+            // Project creation
+            $(document).on('click', UI.selectors.createProjectBtn, async (e) => {
+                e.preventDefault();
+                const projectName = $(UI.selectors.projectNameInput).val().trim();
+                if (projectName) {
+                    await ProjectManager.createProject(projectName);
+                } else {
+                    NotificationManager.error(UI.messages.errors.projectRequired);
+                }
+            });
+    
+            // Project deletion
+            $(document).on('click', UI.selectors.deleteProjectBtn, async (e) => {
+                e.preventDefault();
+                if (AppState.currentProject) {
+                    await ProjectManager.deleteProject(AppState.currentProject);
+                } else {
+                    NotificationManager.error(UI.messages.errors.noProjectSelected);
+                }
+            });
+    
+            // Project selection change
+            $(document).on('change', UI.selectors.projectSelect, function() {
+                const selectedProject = $(this).val();
+                if (selectedProject) {
+                    AppState.currentProject = selectedProject;
+                    SessionManager.setProject(selectedProject);
+                    $('#btn_delete_project').prop('disabled', false);
+                    NavigationManager.updateUIForProject(selectedProject);
+                } else {
+                    $('#btn_delete_project').prop('disabled', true);
+                    AppState.currentProject = null;
+                    SessionManager.clearProject();
+                }
+            });
+    
+            // Sidebar navigation - using event delegation
+            $(document).on('click', Object.values(UI.selectors.sidebarItems).join(','), function(e) {
+                e.preventDefault();
+                const section = Object.keys(UI.selectors.sidebarItems).find(
+                    key => UI.selectors.sidebarItems[key] === `#${this.id}`
+                );
+                if (section) {
+                    NavigationManager.handleSidebarClick(section);
+                }
+            });
+    
+            // Logout
+            $(document).on('click', UI.selectors.logoutBtn, async (e) => {
+                e.preventDefault();
+                await AuthManager.handleLogout();
+            });
+        }
+    };
+
+    // Navigation Management
+    const NavigationManager = {
+        handleSidebarClick(section) {
+            AppState.lastSelectedOption = section;
+            this.loadContentBasedOnCurrentView(section);
+        },
+
+        updateUIForProject(projectName) {
+            document.title = `${projectName} - Edge Vision Framework`;
+            this.loadContentBasedOnCurrentView(AppState.lastSelectedOption);
+        },
+
+        async loadContentBasedOnCurrentView(view) {
+            if (!AppState.currentProject) {
+                NotificationManager.error(UI.messages.errors.noProjectSelected);
+                return;
+            }
+
+            // Add specific view loading logic here
+            console.log(`Loading view: ${view}`);
+        }
+    };
+
+    // Authentication Management
+    const AuthManager = {
+        async handleLogout() {
+            try {
+                const response = await fetch("/auth/logout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                const data = await response.json();
+                if (!data.err) {
+                    AppState.currentProject = null;
+                    SessionManager.clearProject();
+                    window.location.href = "/auth/login";
+                } else {
+                    NotificationManager.error(data.err);
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+                NotificationManager.error(UI.messages.errors.logoutFailed);
+            }
+        }
+    };
+
+    // Notification Management
+    const NotificationManager = {
+        success(message) {
+            toastr.success(message);
+        },
+        error(message) {
+            toastr.error(message);
+        }
+    };
+
+    // Initialize Application
+    $(document).ready(async () => {
+        UIManager.initializeEventHandlers();
+        await SessionManager.verifySessionState();
+        await ProjectManager.loadProjects();
+    });
+
+    // Public API
+    return {
+        AppState,
+        ProjectManager,
+        SessionManager,
+        UIManager
+    };
+})();
