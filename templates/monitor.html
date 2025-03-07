@@ -10,56 +10,12 @@
         </div>
         <div class="card-body">
             <div id="monitor_status">Status: Stopped</div>
-            <iframe id="monitor_iframe" src="" frameborder="0" style="width: 100%; height: 600px; display: none;"></iframe>
+            <iframe id="monitor_iframe" src="" frameborder="0" style="width: 100%; display: none;"></iframe>
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const startButton = document.getElementById('start_tensorboard_btn');
-        const stopButton = document.getElementById('stop_tensorboard_btn');
-        const statusElement = document.getElementById('monitor_status');
-        const iframe = document.getElementById('monitor_iframe');
+{% endblock %}
 
-        async function updateStatus() {
-            const response = await fetch('/monitor/status');
-            const data = await response.json();
-            if (data.status === 'running') {
-                statusElement.textContent = "Status: Running";
-                iframe.src = `http://${window.location.hostname}:6006/`;
-                iframe.style.display = "block";
-                startButton.style.display = "none";
-                stopButton.style.display = "inline-block";
-            } else {
-                statusElement.textContent = "Status: Stopped";
-                iframe.style.display = "none";
-                startButton.style.display = "inline-block";
-                stopButton.style.display = "none";
-            }
-        }
-
-        startButton.addEventListener('click', async function () {
-            const response = await fetch('/monitor/start', { method: 'POST' });
-            const data = await response.json();
-            if (data.message) {
-                updateStatus();
-            } else {
-                alert(data.error || "Failed to start TensorBoard.");
-            }
-        });
-
-        stopButton.addEventListener('click', async function () {
-            const response = await fetch('/monitor/stop', { method: 'POST' });
-            const data = await response.json();
-            if (data.message) {
-                updateStatus();
-            } else {
-                alert(data.error || "Failed to stop TensorBoard.");
-            }
-        });
-
-        // Check status on page load
-        updateStatus();
-    });
-</script>
+{% block scripts %}
+<script src="/static/src/monitor.js"></script>
 {% endblock %}
