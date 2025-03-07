@@ -49,6 +49,10 @@ const App = (function() {
 
     // Project Management
     const ProjectManager = {
+
+
+        
+
         async loadProjects() {
             try {
                 const response = await fetch('/project/list', {
@@ -132,6 +136,22 @@ const App = (function() {
                 $btn.prop('disabled', false).text($btn.data('originalText') || 'Create');
             }
         },
+        
+        async  syncProjectToServer(projectName) {
+            try {
+                const response = await fetch('/project/current_project', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project: projectName })
+                });
+                const data = await response.json();
+                if (data.err) {
+                    console.error('Failed to sync project to server:', data.err);
+                }
+            } catch (error) {
+                console.error('Error syncing project to server:', error);
+            }
+        },
 
         async deleteProject(projectName) {
             try {
@@ -173,6 +193,21 @@ const App = (function() {
     const SessionManager = {
         setProject(projectName) {
             sessionStorage.setItem("project_name", projectName);
+            // Add this new fetch call to sync with server
+            fetch('/project/current_project', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ project: projectName }) // Note: 'project', not 'project_name'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.err) {
+                    console.error('Failed to sync project to server:', data.err);
+                }
+            })
+            .catch(error => {
+                console.error('Error syncing project to server:', error);
+            });
         },
 
         getProject() {
@@ -272,6 +307,7 @@ const App = (function() {
                 if (selectedProject) {
                     AppState.currentProject = selectedProject;
                     SessionManager.setProject(selectedProject);
+                    syncProjectToServer(selectedProject); // Add this line
                     $('#btn_delete_project').prop('disabled', false);
                     NavigationManager.updateUIForProject(selectedProject);
                 } else {
@@ -357,10 +393,13 @@ const App = (function() {
         }
     };
 
-    // Initialize Application
     $(document).ready(async () => {
         UIManager.initializeEventHandlers();
         await SessionManager.verifySessionState();
+        const currentProject = AppState.currentProject || SessionManager.getProject();
+        if (currentProject) {
+            syncProjectToServer(currentProject); // Add this line
+        }
         await ProjectManager.loadProjects();
     });
 
