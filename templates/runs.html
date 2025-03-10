@@ -8,6 +8,7 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#id_modal_create_run">Create Run</button>
             </div>
             <div class="card-body">
+                <!-- Runs Table (unchanged) -->
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -27,18 +28,6 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="logs_container" style="height: 500px; overflow-y: scroll; background-color: white; padding: 10px; border: 1px solid #ccc;">
-                    <div id="logs_content" style="font-family: 'Courier New', monospace; color: black;"></div>
-                </div>
-                
-                <style>
-                    .log-line {
-                        display: block;
-                        white-space: pre;
-                        line-height: 1.5;
-                        min-height: 1.5em;
-                    }
-                </style>
             </div>
         </div>
     </div>
@@ -70,31 +59,25 @@
                         <label class="form-label required">Model</label>
                         <select id="id_select_model" class="form-select">
                             <option value="">Select a Model</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required">Dataset</label>
                         <select id="id_select_dataset" class="form-select">
                             <option value="">Select a Dataset</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required">Optimization</label>
                         <select id="id_select_optimization" class="form-select">
                             <option value="">Select an Optimization</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                 </div>
 
-                <!-- Generate Engine Code Button -->
                 <div class="mb-3">
                     <button id="id_generate_engine_code" type="button" class="btn btn-secondary" disabled>Generate Basic Engine Code</button>
                 </div>
-
-                <!-- Buttons moved above the editor tabs -->
                 <div class="mb-3 d-flex justify-content-end">
                     <button type="button" class="btn btn-link me-2" data-bs-dismiss="modal">Cancel</button>
                     <button id="id_create_run_ok" type="button" class="btn btn-primary">Create Run</button>
@@ -109,7 +92,6 @@
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_config_yaml" role="tab">config.yaml</a>
                     </li>
                 </ul>
-                
                 <div class="tab-content mt-3">
                     <div class="tab-pane fade show active" id="tab_engine_py" role="tabpanel">
                         <div id="editor_engine_py" class="editor"></div>
@@ -122,7 +104,6 @@
         </div>
     </div>
 </div>
-
 
 <!-- Edit Run Modal -->
 <div class="modal fade" id="id_modal_edit_run" tabindex="-1" aria-labelledby="editRunModalLabel" aria-hidden="true">
@@ -146,48 +127,39 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <!-- Changed from plaintext to select dropdowns -->
                     <div class="col-md-4">
                         <label class="form-label required">Model</label>
                         <select id="id_edit_select_model" class="form-select">
                             <option value="">Select a Model</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required">Dataset</label>
                         <select id="id_edit_select_dataset" class="form-select">
                             <option value="">Select a Dataset</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required">Optimization</label>
                         <select id="id_edit_select_optimization" class="form-select">
                             <option value="">Select an Optimization</option>
-                            <!-- Options will be populated dynamically -->
                         </select>
                     </div>
                 </div>
 
-                <!-- Generate Engine Code Button in Edit Run Modal -->
                 <div class="mb-3">
                     <button id="id_generate_edit_engine_code" type="button" class="btn btn-secondary" disabled>Generate Basic Engine Code</button>
                 </div>
-
-                <!-- Buttons moved above the editors -->
                 <div class="mb-3 d-flex justify-content-end">
                     <button type="button" class="btn btn-link me-2" data-bs-dismiss="modal">Cancel</button>
                     <button id="id_edit_run_ok" type="button" class="btn btn-primary">Save Changes</button>
                 </div>
 
-                <!-- Editor for engine.py -->
                 <div class="mb-3">
                     <label class="form-label">Engine Code (engine.py)</label>
                     <div class="editor" id="editor_edit_engine_py"></div>
                 </div>
 
-                <!-- Configuration (config.yaml) Editor -->
                 <div class="mb-3">
                     <label class="form-label">Configuration (config.yaml)</label>
                     <div id="editor_config_yaml_edit" class="editor"></div>
@@ -201,6 +173,22 @@
     </div>
 </div>
 
+<!-- NEW: Log Viewer Modal -->
+<div class="modal fade" id="id_modal_log_viewer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Run Logs</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <!-- Key: fix the modal-body height & allow scrolling -->
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <div id="id_modal_log_editor" style="height: 65vh; width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <style>
     .editor {
         width: 100%;
@@ -209,12 +197,8 @@
     .form-control-plaintext {
         font-weight: bold;
     }
-    #logs_content {
-        white-space: pre-wrap; /* Preserve whitespace and wrap lines */
-        word-wrap: break-word; /* Break long words to prevent overflow */
-    }
 </style>
 
-<!-- Include the runs.js script -->
+<!-- Include runs.js -->
 <script src="/static/src/runs.js"></script>
 {% endblock %}
